@@ -12,7 +12,7 @@ import Then
 class ViewController: UIViewController {
     
     private let backButton = UIButton().then {
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: LayoutConverter.convert(23), weight: .regular)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .regular)
         let image = UIImage(systemName: "chevron.left", withConfiguration: imageConfig)
         
         $0.setImage(image, for: .normal)
@@ -92,42 +92,42 @@ private extension ViewController {
     
     func setupConstraints() {
         surfaceView.snp.makeConstraints {
-            $0.top.leading.equalTo(view.safeAreaLayoutGuide).offset(LayoutConverter.convert(16))
-            $0.bottom.trailing.equalTo(view.safeAreaLayoutGuide).offset(LayoutConverter.convert(-16))
+            $0.top.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
+            $0.bottom.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
         }
         
         backButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(LayoutConverter.convert(27))
-            $0.top.equalToSuperview().offset(LayoutConverter.convert(21))
+            $0.leading.equalToSuperview().offset(21)
+            $0.top.equalToSuperview().offset(21)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(LayoutConverter.convert(186))
-            $0.leading.equalToSuperview().offset(LayoutConverter.convert(18))
-            $0.trailing.equalToSuperview().offset(LayoutConverter.convert(-16))
+            $0.top.equalToSuperview().offset(186)
+            $0.leading.equalToSuperview().offset(18)
+            $0.trailing.equalToSuperview().offset(-16)
         }
         
         subTitleLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(LayoutConverter.convert(12))
+            $0.top.equalTo(titleLabel.snp.bottom).offset(12)
             $0.leading.trailing.equalTo(titleLabel)
         }
         
         emailLabel.snp.makeConstraints {
             $0.leading.trailing.equalTo(titleLabel)
-            $0.top.equalTo(subTitleLabel.snp.bottom).offset(LayoutConverter.convert(60))
+            $0.top.equalTo(subTitleLabel.snp.bottom).offset(60)
         }
         
         emailFieldView.snp.makeConstraints {
             $0.trailing.equalTo(titleLabel)
-            $0.leading.equalTo(emailLabel.snp.leading).offset(LayoutConverter.convert(-2))
-            $0.height.equalTo(LayoutConverter.convert(39))
-            $0.top.equalTo(emailLabel.snp.bottom).offset(LayoutConverter.convert(12))
+            $0.leading.equalTo(emailLabel.snp.leading).offset(-2)
+            $0.height.equalTo(39)
+            $0.top.equalTo(emailLabel.snp.bottom).offset(12)
         }
         
         nextButton.snp.makeConstraints {
             $0.leading.trailing.equalTo(titleLabel)
             $0.height.equalTo(43)
-            $0.top.equalTo(emailFieldView.snp.bottom).offset(LayoutConverter.convert(12))
+            $0.top.equalTo(emailFieldView.snp.bottom).offset(12)
         }
     }
     
