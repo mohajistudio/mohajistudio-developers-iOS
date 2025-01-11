@@ -17,28 +17,28 @@ class SetProfileNameView: BaseStepView {
     
     private let titleLabel = UILabel().then {
         $0.text = "환영합니다!"
-        $0.textColor = .black
+        $0.textColor = UIColor(named: "Black")
         $0.textAlignment = .left
         $0.font = UIFont(name: "Pretendard-Bold", size: 24)
     }
     
     private let subTitleLabel = UILabel().then {
         $0.text = "닉네임을 설정해주세요"
-        $0.textColor = UIColor(hexCode: "666666")
+        $0.textColor = UIColor(named: "Gray 2")
         $0.textAlignment = .left
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
     }
     
     private let emailTitleLabel = UILabel().then {
         $0.text = "email"
-        $0.textColor = .black
+        $0.textColor = UIColor(named: "Black")
         $0.textAlignment = .left
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
     }
     
     private let emailLabel = UILabel().then {
         $0.text = "Mohaji@naver.com"
-        $0.textColor = UIColor(hexCode: "999999")
+        $0.textColor = UIColor(named: "Gray 3")
         $0.textAlignment = .left
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
     }
@@ -46,7 +46,7 @@ class SetProfileNameView: BaseStepView {
     private let profileNameFieldBlock = InputFormView(contentTitle: "프로필 이름", fieldPlaceholder: "Mohaji_Developer", type: .name)
     
     private let nextButton = UIButton().then {
-        $0.backgroundColor = UIColor(hexCode: "0A0A0A")
+        $0.backgroundColor = UIColor(named: "Primary")
         $0.layer.cornerRadius = 8.0
         $0.layer.cornerCurve = .continuous
         $0.setTitle("다음", for: .normal)
@@ -70,7 +70,7 @@ class SetProfileNameView: BaseStepView {
     
     // MARK: - UI Setup
     private func setupUI() {
-        backgroundColor = UIColor(named: "BackgroundColor")
+        backgroundColor = UIColor(named: "Bg 1")
         setupHierarchy()
         setupConstraints()
     }

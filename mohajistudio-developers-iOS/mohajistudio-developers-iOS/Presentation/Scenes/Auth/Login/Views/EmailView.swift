@@ -14,19 +14,18 @@ protocol EmailViewDelegate: AnyObject {
     func emailViewDidTapSignUpBtn()
 }
 
-class EmailView: UIView {
+class EmailView: BaseStepView {
     // MARK: - UI 컴포넌트 설정
-    private let surfaceView = SurfaceView()
     
     private let logoLabel = UILabel().then {
-        $0.textColor = .black
+        $0.textColor = UIColor(named: "Black")
         $0.font = UIFont(name: "Pretendard-Bold", size: 30)
         $0.text = "Mohaji Tech Blog"
         $0.textAlignment = .left
     }
     
     private let subtitleLabel = UILabel().then {
-        $0.textColor = UIColor(hexCode: "666666")
+        $0.textColor = UIColor(named: "Gray 2")
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
         $0.text = "이메일로 로그인"
         $0.textAlignment = .left
@@ -43,12 +42,12 @@ class EmailView: UIView {
         
         attributedString.addAttributes([
             .font: UIFont(name: "Pretendard-Medium", size: 14),
-            .foregroundColor: UIColor(hexCode: "1E96FF")
+            .foregroundColor: UIColor(named: "Info")
         ], range: NSRange(location: 0, length: 13))
         
         attributedString.addAttributes([
             .font: UIFont(name: "Pretendard-Bold", size: 14),
-            .foregroundColor: UIColor(hexCode: "1E96FF")
+            .foregroundColor: UIColor(named: "Info")
         ], range: NSRange(location: 14, length: 4))
         
         $0.setAttributedTitle(attributedString, for: .normal)
@@ -70,7 +69,8 @@ class EmailView: UIView {
     // MARK: - UI 설정
     
     private func setupUI() {
-        backgroundColor = UIColor(named: "BackgroundColor")
+        backgroundColor = UIColor(named: "Bg 1")
+        backButton.isHidden = true
         setupHierarchy()
         setupConstraints()
     }
@@ -81,10 +81,6 @@ class EmailView: UIView {
     }
     
     private func setupConstraints() {
-        surfaceView.snp.makeConstraints {
-            $0.top.leading.equalTo(safeAreaLayoutGuide).offset(20)
-            $0.bottom.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
-        }
         
         logoLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(186)
@@ -100,7 +96,6 @@ class EmailView: UIView {
         emailFieldBlock.snp.makeConstraints {
             $0.top.equalTo(subtitleLabel.snp.bottom).offset(60)
             $0.leading.trailing.equalTo(logoLabel)
-            $0.height.equalTo(70)
         }
         
         loginButton.snp.makeConstraints {
@@ -122,7 +117,11 @@ class EmailView: UIView {
     }
     
     @objc private func loginButtonTapped() {
-        guard let email = emailFieldBlock.getValue() else { return }
+        guard let email = emailFieldBlock.getValue(),
+        ValidationUtility.isValidEmail(email) else {
+            emailFieldBlock.representError(isHidden: false, errorMessage: "올바른 이메일 형식이 아닙니다.")
+            return
+        }
         
         delegate?.emailViewDidTapLogin(email: email)
     }

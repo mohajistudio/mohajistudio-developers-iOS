@@ -17,7 +17,7 @@
 		952368D12D0542E3004DFE98 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 952368D02D0542E3004DFE98 /* SnapKit */; };
 		952368D32D0542E3004DFE98 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 952368D22D0542E3004DFE98 /* SnapKit-Dynamic */; };
 		952368D62D0542FB004DFE98 /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = 952368D52D0542FB004DFE98 /* Then */; };
-		9571E57B2D27EEC000BD70A0 /* BaseAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9571E57A2D27EEC000BD70A0 /* BaseAuthView.swift */; };
+		9571E57B2D27EEC000BD70A0 /* BaseStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9571E57A2D27EEC000BD70A0 /* BaseStepView.swift */; };
 		9577439F2D2187F40015F631 /* SetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9577439E2D2187F40015F631 /* SetPasswordView.swift */; };
 		957743A12D21900C0015F631 /* SetProfileNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957743A02D21900C0015F631 /* SetProfileNameView.swift */; };
 		957743A32D21A64A0015F631 /* VerifyEmailCodeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957743A22D21A64A0015F631 /* VerifyEmailCodeResponse.swift */; };
@@ -54,6 +54,9 @@
 		958C31AE2D104CCC003A2BB5 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958C31AD2D104CCC003A2BB5 /* SignUpViewModel.swift */; };
 		958C31B02D105B40003A2BB5 /* InputFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958C31AF2D105B40003A2BB5 /* InputFormView.swift */; };
 		958E03AE2D19640900BF9284 /* PasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958E03AD2D19640900BF9284 /* PasswordView.swift */; };
+		959B374F2D32C3E100663E90 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959B374E2D32C3E100663E90 /* HomeViewModel.swift */; };
+		959B37532D32C41B00663E90 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959B37522D32C41B00663E90 /* HomeView.swift */; };
+		959B37562D32C5DB00663E90 /* HomeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959B37552D32C5DB00663E90 /* HomeRepository.swift */; };
 		95E296772D2C088F006F9B51 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E296762D2C088F006F9B51 /* HomeViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -65,7 +68,7 @@
 		952368BF2D0538F8004DFE98 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		952368C22D0538F8004DFE98 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		952368C42D0538F8004DFE98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9571E57A2D27EEC000BD70A0 /* BaseAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAuthView.swift; sourceTree = "<group>"; };
+		9571E57A2D27EEC000BD70A0 /* BaseStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseStepView.swift; sourceTree = "<group>"; };
 		9577439E2D2187F40015F631 /* SetPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPasswordView.swift; sourceTree = "<group>"; };
 		957743A02D21900C0015F631 /* SetProfileNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetProfileNameView.swift; sourceTree = "<group>"; };
 		957743A22D21A64A0015F631 /* VerifyEmailCodeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailCodeResponse.swift; sourceTree = "<group>"; };
@@ -101,6 +104,9 @@
 		958C31AD2D104CCC003A2BB5 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		958C31AF2D105B40003A2BB5 /* InputFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputFormView.swift; sourceTree = "<group>"; };
 		958E03AD2D19640900BF9284 /* PasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordView.swift; sourceTree = "<group>"; };
+		959B374E2D32C3E100663E90 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		959B37522D32C41B00663E90 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		959B37552D32C5DB00663E90 /* HomeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRepository.swift; sourceTree = "<group>"; };
 		95E296762D2C088F006F9B51 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -221,7 +227,7 @@
 				958519082D1EA9E8000A8CD9 /* EmailVerificationView.swift */,
 				9577439E2D2187F40015F631 /* SetPasswordView.swift */,
 				957743A02D21900C0015F631 /* SetProfileNameView.swift */,
-				9571E57A2D27EEC000BD70A0 /* BaseAuthView.swift */,
+				9571E57A2D27EEC000BD70A0 /* BaseStepView.swift */,
 				957DC6A42D2EB74E005CB3AA /* PasswordTooltipView.swift */,
 			);
 			path = Views;
@@ -342,6 +348,7 @@
 		958F92D72D0DBA2F00B5FD7B /* Repositories */ = {
 			isa = PBXGroup;
 			children = (
+				959B37542D32C5C900663E90 /* Home */,
 				958F92D82D0DBF0A00B5FD7B /* Auth */,
 			);
 			path = Repositories;
@@ -395,6 +402,14 @@
 			path = SignUp;
 			sourceTree = "<group>";
 		};
+		959B37542D32C5C900663E90 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				959B37552D32C5DB00663E90 /* HomeRepository.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
 		95E296702D2C07FF006F9B51 /* Home */ = {
 			isa = PBXGroup;
 			children = (
@@ -408,6 +423,7 @@
 		95E296712D2C0823006F9B51 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				959B37522D32C41B00663E90 /* HomeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -415,6 +431,7 @@
 		95E296722D2C0830006F9B51 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				959B374E2D32C3E100663E90 /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -523,11 +540,13 @@
 				958519092D1EA9E8000A8CD9 /* EmailVerificationView.swift in Sources */,
 				957743AA2D2264B70015F631 /* AuthInterceptor.swift in Sources */,
 				957743A32D21A64A0015F631 /* VerifyEmailCodeResponse.swift in Sources */,
+				959B374F2D32C3E100663E90 /* HomeViewModel.swift in Sources */,
 				958C31A72D1049E5003A2BB5 /* SurfaceView.swift in Sources */,
 				958519072D1EA5A3000A8CD9 /* AuthRequest.swift in Sources */,
 				95E296772D2C088F006F9B51 /* HomeViewController.swift in Sources */,
 				95825CBB2D130F620049F460 /* AuthButton.swift in Sources */,
-				9571E57B2D27EEC000BD70A0 /* BaseAuthView.swift in Sources */,
+				959B37562D32C5DB00663E90 /* HomeRepository.swift in Sources */,
+				9571E57B2D27EEC000BD70A0 /* BaseStepView.swift in Sources */,
 				952368BB2D0538F7004DFE98 /* SignUpViewController.swift in Sources */,
 				958C31AE2D104CCC003A2BB5 /* SignUpViewModel.swift in Sources */,
 				958E03AE2D19640900BF9284 /* PasswordView.swift in Sources */,
@@ -546,6 +565,7 @@
 				958519052D1E9C02000A8CD9 /* UIViewController+.swift in Sources */,
 				958C31A32D1046C7003A2BB5 /* LoginViewModel.swift in Sources */,
 				952368B72D0538F7004DFE98 /* AppDelegate.swift in Sources */,
+				959B37532D32C41B00663E90 /* HomeView.swift in Sources */,
 				958C319E2D104689003A2BB5 /* LoginViewController.swift in Sources */,
 				958C31AC2D104C96003A2BB5 /* SignUpView.swift in Sources */,
 				958518FB2D1D4F68000A8CD9 /* AuthRouter.swift in Sources */,

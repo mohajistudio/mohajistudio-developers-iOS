@@ -17,21 +17,21 @@ class SetPasswordView: BaseStepView {
     
     private let titleLabel = UILabel().then {
         $0.text = "환영합니다!"
-        $0.textColor = .black
+        $0.textColor = UIColor(named: "Black")
         $0.textAlignment = .left
         $0.font = UIFont(name: "Pretendard-Bold", size: 24)
     }
     
     private let subTitleLabel = UILabel().then {
         $0.text = "비밀번호를 설정해주세요"
-        $0.textColor = UIColor(hexCode: "666666")
+        $0.textColor = UIColor(named: "Gray 2")
         $0.textAlignment = .left
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
     }
     
     private let infoButton = UIButton().then {
         $0.setImage(UIImage(systemName: "info.circle"), for: .normal)
-        $0.tintColor = UIColor(hexCode: "666666")
+        $0.tintColor = UIColor(named: "Gray 2")
     }
     
     private let tooltipView = PasswordTooltipView()
@@ -41,7 +41,7 @@ class SetPasswordView: BaseStepView {
     private let checkPasswordFieldBlock = InputFormView(contentTitle: "비밀번호 확인", fieldPlaceholder: "***********", type: .password)
     
     private let nextButton = UIButton().then {
-        $0.backgroundColor = UIColor(hexCode: "0A0A0A")
+        $0.backgroundColor = UIColor(named: "Primary")
         $0.layer.cornerRadius = 8.0
         $0.layer.cornerCurve = .continuous
         $0.setTitle("다음", for: .normal)
@@ -65,7 +65,7 @@ class SetPasswordView: BaseStepView {
     
     // MARK: - UI Setup
     private func setupUI() {
-        backgroundColor = UIColor(named: "BackgroundColor")
+        backgroundColor = UIColor(named: "Bg 1")
         setupHierarchy()
         setupConstraints()
         setupTooltip()

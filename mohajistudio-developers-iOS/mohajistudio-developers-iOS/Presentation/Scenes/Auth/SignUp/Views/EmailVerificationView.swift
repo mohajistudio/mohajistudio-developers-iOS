@@ -21,14 +21,14 @@ class EmailVerificationView: BaseStepView {
     
     private let titleLabel = UILabel().then {
         $0.text = "이메일 인증"
-        $0.textColor = .black
+        $0.textColor = UIColor(named: "Black")
         $0.textAlignment = .center
         $0.font = UIFont(name: "Pretendard-Bold", size: 24)
     }
     
     private let subTitleLabel = UILabel().then {
         $0.text = "이메일 인증코드가 발송되었습니다.\n인증 코드를 입력하세요"
-        $0.textColor = UIColor(hexCode: "666666")
+        $0.textColor = UIColor(named: "Gray 2")
         $0.textAlignment = .center
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
     }
@@ -40,11 +40,11 @@ class EmailVerificationView: BaseStepView {
         $0.leftView = paddingView
         $0.leftViewMode = .always
         
-        $0.backgroundColor = UIColor(named: "BackgroundColor")
+        $0.backgroundColor = UIColor(named: "Bg 1")
         $0.autocapitalizationType = .none
         $0.attributedPlaceholder = NSAttributedString(
             string: "123456",
-            attributes: [.foregroundColor: UIColor(hexCode: "999999")]
+            attributes: [.foregroundColor: UIColor(named: "Gray 3")]
         )
         $0.textAlignment = .left
         $0.layer.cornerRadius = 8.0
@@ -56,13 +56,13 @@ class EmailVerificationView: BaseStepView {
     private var remainingTime: Int = 300
     
     private let timerLabel = UILabel().then {
-        $0.textColor = UIColor(hexCode: "0A0A0A")
+        $0.textColor = UIColor(named: "Primary")
         $0.font = UIFont(name: "Pretendard-Light", size: 12)
         $0.textAlignment = .center
     }
     
     private let errorLabel = UILabel().then {
-        $0.textColor = UIColor(named: "ErrorColor")
+        $0.textColor = UIColor(named: "Error")
         $0.font = UIFont(name: "Pretendard-Medium", size: 12)
         $0.textAlignment = .center
         $0.isHidden = true
@@ -70,7 +70,7 @@ class EmailVerificationView: BaseStepView {
     
     private let resendButton = UIButton().then {
         $0.setTitle("재전송", for: .normal)
-        $0.backgroundColor = UIColor(hexCode: "1E96FF")
+        $0.backgroundColor = UIColor(named: "Info")
         $0.tintColor = .white
         $0.titleLabel?.font = UIFont(name: "Pretendard-Medium", size: 16)
         $0.layer.cornerRadius = 8.0
@@ -78,7 +78,7 @@ class EmailVerificationView: BaseStepView {
     }
     
     private let nextButton = UIButton().then {
-        $0.backgroundColor = UIColor(hexCode: "0A0A0A")
+        $0.backgroundColor = UIColor(named: "Primary")
         $0.layer.cornerRadius = 8.0
         $0.layer.cornerCurve = .continuous
         $0.setTitle("다음", for: .normal)
@@ -114,7 +114,7 @@ class EmailVerificationView: BaseStepView {
     
     // MARK: - UI Setup
     private func setupUI() {
-        backgroundColor = UIColor(named: "BackgroundColor")
+        backgroundColor = UIColor(named: "Bg 1")
         setupHierarchy()
         setupConstraints()
     }

@@ -12,7 +12,7 @@ class SurfaceView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = UIColor(named: "SurfaceColor")
+        backgroundColor = UIColor(named: "Surface 2")
         layer.cornerRadius = 16.0
         
     }

@@ -8,10 +8,6 @@
 import Foundation
 import Alamofire
 
-struct EmailParameter: Encodable {
-    let email: String
-}
-
 final class SignUpViewModel {
     // MARK: - Properties
     private let authRepository: AuthRepositoryProtocol

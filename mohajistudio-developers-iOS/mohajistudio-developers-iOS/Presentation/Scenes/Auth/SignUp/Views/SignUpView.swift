@@ -19,21 +19,21 @@ final class SignUpView: BaseStepView {
     // MARK: - UI Components
     private let titleLabel = UILabel().then {
         $0.text = "회원가입"
-        $0.textColor = .black
+        $0.textColor = UIColor(named: "Black")
         $0.textAlignment = .center
         $0.font = UIFont(name: "Pretendard-Bold", size: 24)
     }
     
     private let subTitleLabel = UILabel().then {
         $0.text = "계정 생성을 위해 이메일을 입력해주세요"
-        $0.textColor = UIColor(hexCode: "666666")
+        $0.textColor = UIColor(named: "Gray 2")
         $0.textAlignment = .center
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
     }
     
     private let emailLabel = UILabel().then {
         $0.text = "email"
-        $0.textColor = .black
+        $0.textColor = UIColor(named: "Black")
         $0.textAlignment = .center
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
     }
@@ -45,11 +45,11 @@ final class SignUpView: BaseStepView {
         $0.leftView = paddingView
         $0.leftViewMode = .always
         
-        $0.backgroundColor = UIColor(named: "BackgroundColor")
+        $0.backgroundColor = UIColor(named: "Bg 1")
         $0.autocapitalizationType = .none
         $0.attributedPlaceholder = NSAttributedString(
             string: "Mohaji@naver.com",
-            attributes: [.foregroundColor: UIColor(hexCode: "999999")]
+            attributes: [.foregroundColor: UIColor(named: "Gray 3")]
         )
         $0.textAlignment = .center
         $0.layer.cornerRadius = 8.0
@@ -58,14 +58,14 @@ final class SignUpView: BaseStepView {
     }
     
     private let errorLabel = UILabel().then {
-        $0.textColor = UIColor(named: "ErrorColor")
+        $0.textColor = UIColor(named: "Error")
         $0.font = UIFont(name: "Pretendard-Medium", size: 12)
         $0.textAlignment = .center
         $0.isHidden = true
     }
     
     private let nextButton = UIButton().then {
-        $0.backgroundColor = UIColor(hexCode: "0A0A0A")
+        $0.backgroundColor = UIColor(named: "Primary")
         $0.layer.cornerRadius = 8.0
         $0.layer.cornerCurve = .continuous
         $0.setTitle("다음", for: .normal)
@@ -89,7 +89,7 @@ final class SignUpView: BaseStepView {
     
     // MARK: - UI Setup
     private func setupUI() {
-        backgroundColor = UIColor(named: "BackgroundColor")
+        backgroundColor = UIColor(named: "Bg 1")
         setupHierarchy()
         setupConstraints()
     }
@@ -168,13 +168,6 @@ final class SignUpView: BaseStepView {
     }
     
     @objc private func textFieldDidChange() {
-//        guard let email = emailFieldView.text else { return }
-//        
-//        if ValidationUtility.isValidEmail(email) {
-//            showVerificationError(error: "올바른 이메일 형식이 아닙니다.")
-//        } else {
-//            
-//        }
         resetVerificationError()
     }
     

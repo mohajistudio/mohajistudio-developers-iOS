@@ -15,7 +15,7 @@ class InputFormView: UIView {
 
     private let contentTitleLabel = UILabel().then {
         $0.text = "email"
-        $0.textColor = .black
+        $0.textColor = UIColor(named: "Black")
         $0.textAlignment = .left
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
     }
@@ -27,10 +27,10 @@ class InputFormView: UIView {
         $0.leftView = paddingView
         $0.leftViewMode = .always
         
-        $0.backgroundColor = UIColor(named: "BackgroundColor")
+        $0.backgroundColor = UIColor(named: "Bg 1")
         $0.attributedPlaceholder = NSAttributedString(
             string: "",
-            attributes: [.foregroundColor: UIColor(hexCode: "999999")]
+            attributes: [.foregroundColor: UIColor(named: "Gray 3")]
         )
         $0.textAlignment = .left
         $0.layer.cornerRadius = 8.0
@@ -39,7 +39,7 @@ class InputFormView: UIView {
     }
     
     private let errorLabel = UILabel().then {
-        $0.textColor = UIColor(named: "ErrorColor")
+        $0.textColor = UIColor(named: "Error")
         $0.font = UIFont(name: "Pretendard-Medium", size: 12)
         $0.textAlignment = .left
         $0.numberOfLines = 0
@@ -48,7 +48,7 @@ class InputFormView: UIView {
     
     private let secureButton = UIButton().then {
         $0.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
-        $0.tintColor = UIColor(hexCode: "999999")
+        $0.tintColor = UIColor(named: "Gray 2")
     }
     
     init(contentTitle: String, fieldPlaceholder: String, type: UITextContentType) {

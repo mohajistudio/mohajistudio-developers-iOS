@@ -21,6 +21,9 @@ enum NetworkError: Error {
     
     case nicknameAlreadyExists // R0003
     
+    case passwordNotSet // R0005
+    case profileNameNotSet // R0006
+    
     case serverError
     case networkError
     case unknown(String)
@@ -45,6 +48,10 @@ enum NetworkError: Error {
             return "비밀번호를 이미 설정하셨습니다."
         case .nicknameAlreadyExists:
             return "이미 설정된 닉네임입니다."
+        case .passwordNotSet:
+            return "비밀번호를 아직 설정하지 않으셨습니다."
+        case .profileNameNotSet:
+            return "프로필 이름을 아직 설정하지 않으셨습니다."
         case .serverError:
             return "Server error occured"
         case .networkError:
@@ -59,3 +66,4 @@ enum NetworkError: Error {
 // 코드 인증 EV0002: 유효하지 않은 코드, EV0003: 이메일 인증 횟수 초과, R0001: 이미 존재하는 유저
 // 비번 설정 U0001: 알 수 없는 유저, R0002: 이미 설정된 비밀번호, R0001: 이미 존재하는 유저
 // 닉네임 설정 U0001: 알 수 없는 유저, R0003: 이미 설정된 닉네임, R0001: 이미 존재하는 유저
+// 로그인 U0001: 알 수 없는 유저, R0005: 설정되지 않은 비밀번호, R0006: 설정되지 않은 닉네임

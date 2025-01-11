@@ -148,6 +148,7 @@ final class SignUpViewController: UIViewController {
         case .setProfileName:
             showAlert(title: "회원가입 완료" ,message: "로그인 페이지로 이동합니다.", confirmHandler:  {
                 self.navigationController?.popViewController(animated: true)
+                KeychainHelper.shared.clearTokens()
             })
         }
     }
