@@ -12,7 +12,7 @@ class BaseStepView: UIView {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .regular)
         let image = UIImage(systemName: "chevron.left", withConfiguration: imageConfig)
         $0.setImage(image, for: .normal)
-        $0.tintColor = UIColor(hexCode: "0A0A0A")
+        $0.tintColor = UIColor(named: "Primary")
     }
     
     let surfaceView = SurfaceView()
@@ -27,7 +27,7 @@ class BaseStepView: UIView {
     }
     
     private func setupBaseUI() {
-        backgroundColor = UIColor(named: "BackgroundColor")
+        backgroundColor = UIColor(named: "Bg 1")
         addSubview(surfaceView)
         surfaceView.addSubview(backButton)
         

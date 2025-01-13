@@ -24,7 +24,7 @@ class AuthButton: UIButton {
     }
     
     private func setupUI() {
-        self.backgroundColor = UIColor(named: "ButtonColor")
+        self.backgroundColor = UIColor(named: "Primary")
         self.layer.cornerRadius = 8.0
         self.layer.cornerCurve = .continuous
         self.tintColor = .white

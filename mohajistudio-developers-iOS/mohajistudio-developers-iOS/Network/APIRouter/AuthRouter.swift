@@ -14,6 +14,8 @@ enum AuthRouter {
     case refreshToken(RefreshTokenRequest)
     case setPassword(SetPasswordRequest)
     case setNickname(SetNicknameRequest)
+    
+    case login(LoginRequest)
 }
 
 extension AuthRouter: URLRequestConvertible {
@@ -36,6 +38,8 @@ extension AuthRouter: URLRequestConvertible {
             return "/auth/register/password"
         case .setNickname:
             return "/auth/register/nickname"
+        case .login:
+            return "/auth/login"
         }
     }
     
@@ -51,6 +55,8 @@ extension AuthRouter: URLRequestConvertible {
             return .post
         case .setNickname:
             return .post
+        case .login:
+            return .post
         }
     }
     
@@ -65,6 +71,8 @@ extension AuthRouter: URLRequestConvertible {
         case .setPassword:
             return .applicationJSON
         case .setNickname:
+            return .applicationJSON
+        case .login:
             return .applicationJSON
         }
     }
@@ -92,6 +100,9 @@ extension AuthRouter: URLRequestConvertible {
             let jsonData = try JSONEncoder().encode(requestModel)
             request.httpBody = jsonData
         case .setNickname(let requestModel):
+            let jsonData = try JSONEncoder().encode(requestModel)
+            request.httpBody = jsonData
+        case .login(let requestModel):
             let jsonData = try JSONEncoder().encode(requestModel)
             request.httpBody = jsonData
         }

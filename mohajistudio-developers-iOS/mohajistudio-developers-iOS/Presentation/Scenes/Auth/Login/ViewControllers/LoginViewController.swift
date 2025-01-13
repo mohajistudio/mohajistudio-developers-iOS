@@ -123,9 +123,7 @@ class LoginViewController: UIViewController {
             currentStep = .password
             updateView(for: .password, animated: true, reverseAnimation: false)
         case .password:
-            currentStep = .email
-            viewModel.updateEmail("")
-            updateView(for: .email, animated: true, reverseAnimation: true)
+            return
         }
     }
     
@@ -179,11 +177,16 @@ extension LoginViewController: PasswordViewDelegate {
                 try await viewModel.login()
 
                 await MainActor.run {
-
+                    self.showAlert(message: "로그인에 성공했습니다.")
                 }
-            } catch {
+            } catch let error as NetworkError {
                 await MainActor.run {
-//                    showAlert()
+                    self.showAlert(message: error.errorMessage)
+                }
+            }
+            catch {
+                await MainActor.run {
+                    self.showAlert(message: "예기치 못한 오류가 발생했습니다.\n다시 시도해주세요.")
                 }
             }
 

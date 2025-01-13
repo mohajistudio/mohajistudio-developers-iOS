@@ -13,6 +13,7 @@ protocol AuthRepositoryProtocol {
     func verifyEmailCode(email: String, code: String) async throws -> AuthTokenResponse
     func setPassword(password: String) async throws
     func setNickname(nickname: String) async throws
+    func login(email: String, password: String) async throws -> AuthTokenResponse
 }
 
 final class AuthRepository: AuthRepositoryProtocol {
@@ -111,6 +112,33 @@ final class AuthRepository: AuthRepositoryProtocol {
         
     }
     
+    func login(email: String, password: String) async throws -> AuthTokenResponse {
+        let request = LoginRequest(email: email, password: password)
+        
+        let response = try await AF.request(AuthRouter.login(request))
+            .serializingResponse(using: .data)
+            .response
+        
+        print("\(response)")
+        
+        guard let statusCode = response.response?.statusCode else {
+            throw NetworkError.invalidResponse
+        }
+        
+        switch statusCode {
+        case 200:
+            guard let data = response.data else { throw NetworkError.invalidResponse }
+            let decoder = JSONDecoder()
+            return try decoder.decode(AuthTokenResponse.self, from: data)
+        default:
+            if let data = response.data {
+                throw try handleError(data)
+            } else {
+                throw NetworkError.invalidResponse
+            }
+        }
+    }
+    
     
     // MARK: - auth 관련 에러 handle
     private func handleError(_ data: Data) throws -> NetworkError {
@@ -139,6 +167,10 @@ final class AuthRepository: AuthRepositoryProtocol {
             return .tooManyAttempts
         case "U0001":
             return .unknownUser
+        case "R0005":
+            return .passwordNotSet
+        case "R0006":
+            return .profileNameNotSet
             
         default:
             return .unknown(errorResponse.message)
@@ -149,4 +181,5 @@ final class AuthRepository: AuthRepositoryProtocol {
 // 코드 발급 EV004: 인증 메일 요청 횟수 초과, EV0001: 이메일 전송 실패, R0001: 이미 존재하는 유저
 // 코드 인증 EV0002: 유효하지 않은 이메일, EV0003: 이메일 인증 횟수 초과, R0001: 이미 존재하는 유저
 // 비번 설정 U0001: 알 수 없는 유저, R0002: 이미 설정된 비밀번호, R0001: 이미 존재하는 유저
+// 로그인 U0001: 알 수 없는 유저, R0005: 설정되지 않은 비밀번호, R0006: 설정되지 않은 닉네임
 // 사용자 전용 메시지는 후에 설정, 기획
