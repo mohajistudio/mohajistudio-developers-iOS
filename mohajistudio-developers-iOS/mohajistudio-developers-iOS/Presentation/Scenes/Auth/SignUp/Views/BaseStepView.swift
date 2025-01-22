@@ -48,6 +48,14 @@ class BaseStepView: UIView {
         }
     }
     
+    func setupTextFieldDelegate(for textField: UITextField) {
+        textField.delegate = self
+    }
+    
+    func setupInputFormViewDelegate(for inputForm: InputFormView) {
+        inputForm.getTextField().delegate = self
+    }
+    
     func hideKeyboardWhenTappedBackground() {
         let tapEvent = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapEvent.cancelsTouchesInView = false
@@ -100,5 +108,12 @@ class BaseStepView: UIView {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+}
+
+extension BaseStepView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

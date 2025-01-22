@@ -9,6 +9,7 @@ import Foundation
 import Alamofire
 
 protocol AuthRepositoryProtocol {
+    func checkSignUpStatus(email: String) async throws
     func requestEmailVerification(email: String) async throws
     func verifyEmailCode(email: String, code: String) async throws -> AuthTokenResponse
     func setPassword(password: String) async throws
@@ -17,6 +18,33 @@ protocol AuthRepositoryProtocol {
 }
 
 final class AuthRepository: AuthRepositoryProtocol {
+    
+    func checkSignUpStatus(email: String) async throws {
+        
+        let response = try await AF.request(AuthRouter.checkSignUpStatus(email)).serializingResponse(using: .data)
+            .response
+        
+        print("🚀 Check signup status response:", response)  // 응답 전체 확인
+        print("Status code:", response.response?.statusCode ?? "nil")  // 상태 코드 확인
+        if let data = response.data {
+            print("Response data:", String(data: data, encoding: .utf8) ?? "nil")  // 응답 데이터 확인
+        }
+        
+        guard let statusCode = response.response?.statusCode else {
+            throw NetworkError.invalidResponse
+        }
+        
+        switch statusCode {
+        case 200:
+            return
+        default:
+            if let data = response.data {
+                throw try handleError(data)
+            } else {
+                throw NetworkError.invalidResponse
+            }
+        }
+    }
     
     func requestEmailVerification(email: String) async throws {
         let request = EmailVerificationRequest(email: email)
@@ -142,6 +170,8 @@ final class AuthRepository: AuthRepositoryProtocol {
     
     // MARK: - auth 관련 에러 handle
     private func handleError(_ data: Data) throws -> NetworkError {
+        print("Error response data:", String(data: data, encoding: .utf8) ?? "")
+        
         struct ErrorResponse: Decodable {
             let code: String
             let message: String

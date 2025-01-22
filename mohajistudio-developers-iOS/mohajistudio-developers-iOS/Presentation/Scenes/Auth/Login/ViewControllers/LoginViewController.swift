@@ -159,6 +159,10 @@ extension LoginViewController: EmailViewDelegate {
         }
         
     }
+    
+    func emailViewDidTapBackButton() {
+        self.navigationController?.dismiss(animated: true)
+    }
 
 }
 
@@ -177,7 +181,9 @@ extension LoginViewController: PasswordViewDelegate {
                 try await viewModel.login()
 
                 await MainActor.run {
-                    self.showAlert(message: "로그인에 성공했습니다.")
+                    self.showAlert(message: "로그인에 성공했습니다.", confirmHandler:  {
+                        self.navigationController?.dismiss(animated: true)
+                    })
                 }
             } catch let error as NetworkError {
                 await MainActor.run {

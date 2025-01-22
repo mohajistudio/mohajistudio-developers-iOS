@@ -81,6 +81,7 @@ final class SignUpView: BaseStepView {
         super.init(frame: frame)
         setupUI()
         setupActions()
+        setupTextFieldDelegate(for: emailFieldView)
     }
     
     required init?(coder: NSCoder) {

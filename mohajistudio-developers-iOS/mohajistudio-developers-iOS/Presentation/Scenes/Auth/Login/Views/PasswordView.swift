@@ -60,6 +60,7 @@ class PasswordView: BaseStepView {
         
         setupUI()
         setupActions()
+        setupInputFormViewDelegate(for: passwordFieldBlock)
     }
     
     required init?(coder: NSCoder) {

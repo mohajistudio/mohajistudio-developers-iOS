@@ -95,6 +95,7 @@ class EmailVerificationView: BaseStepView {
         setupUI()
         setupActions()
         bindViewModel()
+        setupTextFieldDelegate(for: verificationCodeField)
     }
     
     required init?(coder: NSCoder) {

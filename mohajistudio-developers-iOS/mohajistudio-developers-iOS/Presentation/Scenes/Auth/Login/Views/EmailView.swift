@@ -12,6 +12,7 @@ import Then
 protocol EmailViewDelegate: AnyObject {
     func emailViewDidTapLogin(email: String)
     func emailViewDidTapSignUpBtn()
+    func emailViewDidTapBackButton()
 }
 
 class EmailView: BaseStepView {
@@ -60,6 +61,7 @@ class EmailView: BaseStepView {
         
         setupUI()
         setupActions()
+        setupInputFormViewDelegate(for: emailFieldBlock)
     }
     
     required init?(coder: NSCoder) {
@@ -70,7 +72,6 @@ class EmailView: BaseStepView {
     
     private func setupUI() {
         backgroundColor = UIColor(named: "Bg 1")
-        backButton.isHidden = true
         setupHierarchy()
         setupConstraints()
     }
@@ -114,6 +115,7 @@ class EmailView: BaseStepView {
     private func setupActions() {
         loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         toSignUpButton.addTarget(self, action: #selector(toSignUpButtonTapped), for: .touchUpInside)
+        backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
     }
     
     @objc private func loginButtonTapped() {
@@ -128,6 +130,10 @@ class EmailView: BaseStepView {
     
     @objc private func toSignUpButtonTapped() {
         delegate?.emailViewDidTapSignUpBtn()
+    }
+    
+    @objc private func didTapBackButton() {
+        delegate?.emailViewDidTapBackButton()
     }
     
 }

@@ -57,6 +57,9 @@ class SetPasswordView: BaseStepView {
         super.init(frame: frame)
         setupUI()
         setupActions()
+        [passwordFieldBlock, checkPasswordFieldBlock].forEach {
+            setupTextFieldDelegate(for: $0.getTextField())
+        }
     }
     
     required init?(coder: NSCoder) {
