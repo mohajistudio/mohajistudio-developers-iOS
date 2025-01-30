@@ -62,6 +62,7 @@ class SetProfileNameView: BaseStepView {
         super.init(frame: frame)
         setupUI()
         setupActions()
+        setupInputFormViewDelegate(for: profileNameFieldBlock)
     }
     
     required init?(coder: NSCoder) {

@@ -142,7 +142,7 @@ class InputFormView: UIView {
             
             self.layoutIfNeeded()
         } else {
-            self.contentField.layer.borderColor = UIColor(named: "ErrorColor")?.cgColor
+            self.contentField.layer.borderColor = UIColor(named: "Error")?.cgColor
             self.contentField.layer.borderWidth = 1.0
             self.errorLabel.text = errorMessage
             self.errorLabel.isHidden = false

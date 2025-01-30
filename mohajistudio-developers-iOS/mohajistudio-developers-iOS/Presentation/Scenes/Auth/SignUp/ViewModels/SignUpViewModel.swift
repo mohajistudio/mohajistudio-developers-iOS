@@ -10,6 +10,13 @@ import Alamofire
 
 final class SignUpViewModel {
     // MARK: - Properties
+    enum SignUpStatus {
+        case needEmail
+        case needVerification
+        case needPassword
+        case needProfileName
+    }
+    
     private let authRepository: AuthRepositoryProtocol
     private(set) var currentEmail: String?
     private var tokens: AuthTokenResponse?
@@ -100,5 +107,9 @@ extension SignUpViewModel {
     
     func setNickname(nickname: String) async throws {
         try await authRepository.setNickname(nickname: nickname)
+    }
+    
+    func checkSignUpStatus(email: String) async throws  {
+        try await authRepository.checkSignUpStatus(email: email)
     }
 }

@@ -134,6 +134,48 @@ final class SignUpViewController: UIViewController {
         }
     }
     
+    private func moveToRegistrationStep(email: String) async {
+        
+        do {
+            // 상태 체크
+            try await viewModel.checkSignUpStatus(email: email)
+            
+            await MainActor.run {
+                // 상태 코드에 따라 적절한 단계로 이동
+                moveToNextStep()
+            }
+        } catch let error as NetworkError {
+            switch error {
+                
+            case .unknownUser:
+                currentStep = .emailVerification
+                viewModel.setEmail(email)
+                updateView(for: .emailVerification, animated: true)
+                
+            case .passwordNotSet:
+                currentStep = .setPassword
+                viewModel.setEmail(email)
+                updateView(for: .setPassword, animated: true)
+                
+            case .profileNameNotSet:
+                currentStep = .setProfileName
+                viewModel.setEmail(email)
+                updateView(for: .setProfileName, animated: true)
+                
+            default:
+                //                    currentStep = .emailVerification
+                //                    viewModel.setEmail(email)
+                //                    updateView(for: .emailVerification, animated: true)
+                showAlert(message: "예기치 못한 오류가 발생했습니다.")
+            }
+        } catch {
+            await MainActor.run {
+                showAlert(message: "예기치 못한 오류가 발생했습니다.\n다시 시도해주세요.")
+            }
+        }
+    }
+    
+    
     func moveToNextStep() {
         switch currentStep {
         case .email:
@@ -164,8 +206,8 @@ final class SignUpViewController: UIViewController {
             currentStep = .email // email 단계부터 다시 인증할 수 있도록
             updateView(for: .email, animated: true, reverseAnimation: true)
         case .setProfileName:
-            currentStep = .setPassword
-            updateView(for: .setPassword, animated: true, reverseAnimation: true)
+            currentStep = .email
+            updateView(for: .email, animated: true, reverseAnimation: true)
             
         }
     }
@@ -188,11 +230,15 @@ extension SignUpViewController: SignUpViewDelegate {
         
         viewModel.setEmail(email)
         
-        moveToNextStep() // 미리 화면을 넘기는 낙관적 UI
-        
         Task {
+            
+            
             do {
-                try await viewModel.requestEmailVerification(email: email)
+                await moveToRegistrationStep(email: email)
+                
+                if currentStep == .emailVerification {
+                    try await viewModel.requestEmailVerification(email: email)
+                }
             } catch let error as NetworkError {
                 print(error)
                 try? await Task.sleep(for: .seconds(1.5)) // UX적 요소를 고려해 응답이 바로 오면 바로 뒤로가기하지 않도록

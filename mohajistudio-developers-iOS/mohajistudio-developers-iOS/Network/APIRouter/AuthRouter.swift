@@ -9,6 +9,7 @@ import Foundation
 import Alamofire
 
 enum AuthRouter {
+    case checkSignUpStatus(String)
     case requestEmailVerification(EmailVerificationRequest)
     case verifyEmailCode(EmailCodeVerificationRequest)
     case refreshToken(RefreshTokenRequest)
@@ -28,6 +29,8 @@ extension AuthRouter: URLRequestConvertible {
     
     var path: String {
         switch self {
+        case .checkSignUpStatus:
+            return "/auth/register/status"
         case .requestEmailVerification:
             return "/auth/register/email/request"
         case .verifyEmailCode:
@@ -45,6 +48,8 @@ extension AuthRouter: URLRequestConvertible {
     
     var method: HTTPMethod {
         switch self {
+        case .checkSignUpStatus:
+            return .get
         case .requestEmailVerification:
             return .post
         case .verifyEmailCode:
@@ -62,6 +67,8 @@ extension AuthRouter: URLRequestConvertible {
     
     var headers: HTTPHeaderFields {
         switch self {
+        case .checkSignUpStatus:
+            return .applicationJSON
         case .requestEmailVerification:
             return .applicationJSON
         case .verifyEmailCode:
@@ -77,6 +84,20 @@ extension AuthRouter: URLRequestConvertible {
         }
     }
     
+    var parameters: Parameters? {
+        switch self {
+        case .checkSignUpStatus(let email):
+            return ["email": email]
+        case .requestEmailVerification,
+             .verifyEmailCode,
+             .refreshToken,
+             .setPassword,
+             .setNickname,
+             .login:
+            return nil
+        }
+    }
+    
     func asURLRequest() throws -> URLRequest {
         let url = baseURL.appendingPathComponent(path)
         var request = URLRequest(url: url)
@@ -87,26 +108,24 @@ extension AuthRouter: URLRequestConvertible {
         }
         
         switch self {
+        case .checkSignUpStatus:
+            return try URLEncoding.default.encode(request, with: parameters)
+            
         case .requestEmailVerification(let requestModel):
-            let jsonData = try JSONEncoder().encode(requestModel)
-            request.httpBody = jsonData
+            request.httpBody = try JSONEncoder().encode(requestModel)
         case .verifyEmailCode(let requestModel):
-            let jsonData = try JSONEncoder().encode(requestModel)
-            request.httpBody = jsonData
+            request.httpBody = try JSONEncoder().encode(requestModel)
         case .refreshToken(let requestModel):
-            let jsonData = try JSONEncoder().encode(requestModel)
-            request.httpBody = jsonData
+            request.httpBody = try JSONEncoder().encode(requestModel)
         case .setPassword(let requestModel):
-            let jsonData = try JSONEncoder().encode(requestModel)
-            request.httpBody = jsonData
+            request.httpBody = try JSONEncoder().encode(requestModel)
         case .setNickname(let requestModel):
-            let jsonData = try JSONEncoder().encode(requestModel)
-            request.httpBody = jsonData
+            request.httpBody = try JSONEncoder().encode(requestModel)
         case .login(let requestModel):
-            let jsonData = try JSONEncoder().encode(requestModel)
-            request.httpBody = jsonData
+            request.httpBody = try JSONEncoder().encode(requestModel)
         }
         
         return request
     }
+
 }
