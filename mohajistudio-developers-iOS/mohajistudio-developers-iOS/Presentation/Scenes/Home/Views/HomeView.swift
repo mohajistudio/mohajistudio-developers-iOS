@@ -9,13 +9,22 @@ import UIKit
 
 protocol HomeViewDelegate: AnyObject {
     func homeViewDidTapLogin()
-    func homeView(_ view: HomeView, didSearch query: String)
-    func homeView(_ view: HomeView, didSelectTag tag: String)
+    func didSearch(_ query: String)
+    func didSelectTag(_ tag: String)
 }
 
-class HomeView: BaseView {
+class HomeView: UIView {
 
     weak var delegate: HomeViewDelegate?
+    private let tableViewHeaderView = HomeTableViewHeaderView()
+    
+    var tagCollectionView: UICollectionView {
+        return tableViewHeaderView.tagCollectionView
+    }
+    
+    let headerView = UIView().then {
+        $0.backgroundColor = UIColor(named: "Bg 1")
+    }
     
     private let logo = UIImageView().then {
         $0.image = UIImage(named: "Logo")
@@ -31,59 +40,14 @@ class HomeView: BaseView {
         $0.tintColor = UIColor(named: "Primary")
     }
     
-    private let searchHeaderView = HeaderWithIconView().then {
-        $0.configure(iconName: "Search", headerTitle: "Search")
-    }
-    
-    private let searchView = UIView().then {
-        $0.backgroundColor = UIColor(named: "Bg 2")
-        $0.layer.cornerRadius = 8
-        $0.isUserInteractionEnabled = true
-    }
-    
-    private let searchBar = UISearchBar().then {
-        $0.searchBarStyle = .minimal
-        $0.backgroundColor = .clear
-        $0.searchTextField.borderStyle = .none
-        $0.searchTextField.font = UIFont(name: "Pretendard-Medium", size: 16)
-        $0.searchTextField.backgroundColor = .clear
-        $0.searchTextField.attributedPlaceholder = NSAttributedString(string: "검색어를 입력해주세요", attributes: [NSAttributedString.Key.foregroundColor : UIColor(named: "Gray 3")])
-        $0.searchTextField.leftView = nil
-        $0.searchTextField.leftViewMode = .never
-        $0.isUserInteractionEnabled = true
-    }
-    
-    private let tagHeaderView = HeaderWithIconView().then {
-        $0.configure(iconName: "Tag", headerTitle: "Tags")
-    }
-    
-    let tagCollectionView: UICollectionView = {
-        let layout = TagFlowLayout()
-        layout.minimumInteritemSpacing = 8
-        layout.minimumLineSpacing = 8
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-        
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.register(TagCell.self, forCellWithReuseIdentifier: "TagCell")
-        cv.backgroundColor = .clear
-        cv.isScrollEnabled = false
-        cv.showsHorizontalScrollIndicator = false
-        cv.allowsMultipleSelection = true
-        
-        return cv
-    }()
-
-    private let postHeaderView = HeaderWithIconView().then {
-        $0.configure(iconName: "File", headerTitle: "All Post")
-    }
-    
-    let postTableView = UITableView().then {
+    let homeTableView = UITableView(frame: .zero, style: .grouped).then {
         $0.backgroundColor = .clear
         $0.register(PostCell.self, forCellReuseIdentifier: PostCell.identifier)
+        $0.register(HomeTableViewHeaderView.self, forHeaderFooterViewReuseIdentifier: HomeTableViewHeaderView.identifier)
         $0.separatorStyle = .none
         $0.estimatedRowHeight = 370
         $0.rowHeight = UITableView.automaticDimension
-        $0.isScrollEnabled = false
+        
     }
     
     override init(frame: CGRect) {
@@ -91,6 +55,8 @@ class HomeView: BaseView {
         
         setupUI()
         setupActions()
+        hideKeyboardWhenTappedBackground()
+        tableViewHeaderView.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -107,22 +73,23 @@ class HomeView: BaseView {
     }
     
     private func setupHierarchy() {
+        
+        addSubview(headerView)
+        
         headerView.addSubview(logo)
         headerView.addSubview(postButton)
         headerView.addSubview(loginButton)
         
-        contentView.addSubview(searchHeaderView)
-        contentView.addSubview(searchView)
-        searchView.addSubview(searchBar)
-        
-        contentView.addSubview(tagHeaderView)
-        contentView.addSubview(tagCollectionView)
-        
-        contentView.addSubview(postHeaderView)
-        contentView.addSubview(postTableView)
+        addSubview(homeTableView)
     }
     
     private func setupConstraints() {
+        
+        headerView.snp.makeConstraints {
+            $0.top.equalTo(safeAreaLayoutGuide)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(60)
+        }
         
         logo.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
@@ -141,54 +108,16 @@ class HomeView: BaseView {
             $0.width.height.equalTo(24)
         }
         
-        searchHeaderView.snp.makeConstraints {
+        homeTableView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.top.equalToSuperview().offset(28)
-            $0.height.equalTo(24)
+            $0.top.equalTo(headerView.snp.bottom)
+            $0.bottom.equalToSuperview()
         }
         
-        searchView.snp.makeConstraints {
-            $0.top.equalTo(searchHeaderView.snp.bottom).offset(12)
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(44)
-        }
-        
-        searchBar.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        tagHeaderView.snp.makeConstraints {
-            $0.leading.trailing.equalTo(searchHeaderView)
-            $0.top.equalTo(searchBar.snp.bottom).offset(40)
-            $0.height.equalTo(24)
-        }
-        
-        tagCollectionView.snp.makeConstraints {
-            $0.leading.trailing.equalTo(searchHeaderView)
-            $0.top.equalTo(tagHeaderView.snp.bottom).offset(12)
-            $0.height.equalTo(150)
-        }
-        
-        postHeaderView.snp.makeConstraints {
-            $0.leading.trailing.equalTo(searchHeaderView)
-            $0.top.equalTo(tagCollectionView.snp.bottom).offset(40)
-            $0.height.equalTo(24)
-        }
-        
-        postTableView.snp.makeConstraints {
-            $0.leading.trailing.equalTo(searchHeaderView)
-            $0.top.equalTo(postHeaderView.snp.bottom).offset(12)
-            $0.height.equalTo(1200)
-        }
-        
-        contentView.snp.makeConstraints {
-            $0.bottom.equalTo(postTableView.snp.bottom).offset(24)
-        }
     }
     
     private func setupActions() {
         loginButton.addTarget(self, action: #selector(didTapLoginButton), for: .touchUpInside)
-        searchBar.delegate = self
     }
     
     @objc private func didTapLoginButton() {
@@ -196,13 +125,26 @@ class HomeView: BaseView {
     }
 }
 
-extension HomeView: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        delegate?.homeView(self, didSearch: searchText)
+extension HomeView: HomeTableViewHeaderViewDelegate {
+    func didSearch(_ query: String) {
+        delegate?.didSearch(query)
     }
     
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        print("searchButtonClicked")
-        searchBar.resignFirstResponder()
+    func didSelectTag(_ tag: String) {
+        delegate?.didSelectTag(tag)
+    }
+    
+    
+}
+
+extension HomeView {
+    func hideKeyboardWhenTappedBackground() {
+        let tapEvent = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapEvent.cancelsTouchesInView = false
+        addGestureRecognizer(tapEvent)
+    }
+    
+    @objc func dismissKeyboard() {
+        endEditing(true)
     }
 }
