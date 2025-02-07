@@ -75,7 +75,7 @@ class HomeTableViewHeaderView: UITableViewHeaderFooterView {
     }
     
     private func setupUI() {
-        backgroundColor = UIColor(named: "Bg 1")
+        contentView.backgroundColor = UIColor(named: "Bg 1")
         
         setupHierarchy()
         setupConstraints()
@@ -93,20 +93,17 @@ class HomeTableViewHeaderView: UITableViewHeaderFooterView {
     
     private func setupConstraints() {
         
-        contentView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
         
         searchHeaderView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(20)
             $0.top.equalToSuperview().offset(40)
             $0.height.equalTo(24)
         }
         
         searchView.snp.makeConstraints {
             $0.top.equalTo(searchHeaderView.snp.bottom).offset(12)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(44)
+            $0.leading.trailing.equalTo(searchHeaderView)
+            $0.height.equalTo(40)
         }
         
         searchBar.snp.makeConstraints {

@@ -9,6 +9,7 @@ import UIKit
 
 protocol HomeViewDelegate: AnyObject {
     func homeViewDidTapLogin()
+    func homeViewDidTapPost()
     func didSearch(_ query: String)
     func didSelectTag(_ tag: String)
 }
@@ -109,7 +110,7 @@ class HomeView: UIView {
         }
         
         homeTableView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalToSuperview()
             $0.top.equalTo(headerView.snp.bottom)
             $0.bottom.equalToSuperview()
         }
@@ -118,14 +119,20 @@ class HomeView: UIView {
     
     private func setupActions() {
         loginButton.addTarget(self, action: #selector(didTapLoginButton), for: .touchUpInside)
+        postButton.addTarget(self, action: #selector(didTapPostButton), for: .touchUpInside)
     }
     
     @objc private func didTapLoginButton() {
         delegate?.homeViewDidTapLogin()
     }
+    
+    @objc private func didTapPostButton() {
+        delegate?.homeViewDidTapPost()
+    }
 }
 
 extension HomeView: HomeTableViewHeaderViewDelegate {
+    
     func didSearch(_ query: String) {
         delegate?.didSearch(query)
     }
@@ -133,7 +140,6 @@ extension HomeView: HomeTableViewHeaderViewDelegate {
     func didSelectTag(_ tag: String) {
         delegate?.didSelectTag(tag)
     }
-    
     
 }
 
