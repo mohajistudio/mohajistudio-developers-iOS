@@ -69,6 +69,13 @@ extension HomeViewController: HomeViewDelegate {
         present(navigationController, animated: true)
     }
     
+    func homeViewDidTapPost() {
+        print("post 버튼 tap")
+        let profileDetailViewModel = ProfileDetailViewModel()
+        let vc = ProfileDetailTabViewController(viewModel: profileDetailViewModel)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
 }
 
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -110,6 +117,11 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let postDetailVC = PostDetailViewController()
+        self.present(postDetailVC, animated: false)
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
@@ -130,7 +142,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return 384
+        return 300
     }
     
 }

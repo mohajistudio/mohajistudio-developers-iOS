@@ -85,7 +85,7 @@ class PostCell: UITableViewCell {
     private func setupConstraints() {
         
         containerView.snp.makeConstraints {
-            $0.horizontalEdges.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview().inset(20)
             $0.top.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-24)
         }

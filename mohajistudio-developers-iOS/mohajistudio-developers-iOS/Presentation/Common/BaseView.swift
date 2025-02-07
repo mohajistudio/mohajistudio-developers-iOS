@@ -12,16 +12,6 @@ class BaseView: UIView {
     let headerView = UIView().then {
         $0.backgroundColor = UIColor(named: "Bg 1")
     }
-    
-    private let scrollView = UIScrollView().then {
-        $0.backgroundColor = UIColor(named: "Bg 1")
-        $0.isUserInteractionEnabled = true
-    }
-    
-    let contentView = UIView().then {
-        $0.backgroundColor = UIColor(named: "Bg 1")
-        $0.isUserInteractionEnabled = true
-    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -42,8 +32,6 @@ class BaseView: UIView {
     
     private func setupHierarchy() {
         addSubview(headerView)
-        addSubview(scrollView)
-        scrollView.addSubview(contentView)
     }
     
     private func setupConstraints() {
@@ -52,16 +40,6 @@ class BaseView: UIView {
             $0.top.equalTo(safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(60)
-        }
-        
-        scrollView.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalToSuperview()
-            $0.top.equalTo(headerView.snp.bottom)
-        }
-        
-        contentView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-            $0.width.equalToSuperview()
         }
         
     }
@@ -76,6 +54,6 @@ extension BaseView {
     }
     
     @objc func dismissKeyboard() {
-        contentView.endEditing(true)
+//        contentView.endEditing(true)
     }
 }

@@ -1,28 +1,36 @@
 PODS:
   - Alamofire (5.9.1)
+  - Pageboy (4.2.0)
   - SnapKit (5.7.1)
   - SwiftKeychainWrapper (4.0.1)
+  - Tabman (3.2.0):
+    - Pageboy (~> 4.2.0)
   - Then (3.0.0)
 
 DEPENDENCIES:
   - Alamofire
   - SnapKit
   - SwiftKeychainWrapper
+  - Tabman
   - Then
 
 SPEC REPOS:
   trunk:
     - Alamofire
+    - Pageboy
     - SnapKit
     - SwiftKeychainWrapper
+    - Tabman
     - Then
 
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
+  Pageboy: 7f7886f61c76633df635861bf7839caf2cabdb3e
   SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
+  Tabman: 49f9181a2bfe5c29d002864dac2de8e0b7ea9180
   Then: 844265ae87834bbe1147d91d5d41a404da2ec27d
 
-PODFILE CHECKSUM: 298ac9e2fe9106fd6f91979b6f7d94c7727a56eb
+PODFILE CHECKSUM: c01ec29e9887ecb7e7e4a866be7161b13a2c2a7a
 
 COCOAPODS: 1.15.2
