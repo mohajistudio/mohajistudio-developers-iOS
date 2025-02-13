@@ -8,7 +8,7 @@
 import UIKit
 
 protocol HomeViewDelegate: AnyObject {
-    func homeViewDidTapLogin()
+    func homeViewDidTapSideMenu()
     func homeViewDidTapPost()
     func didSearch(_ query: String)
     func didSelectTag(_ tag: String)
@@ -36,7 +36,7 @@ class HomeView: UIView {
         $0.tintColor = UIColor(named: "Primary")
     }
     
-    private let loginButton = UIButton().then {
+    private let SideMenuButton = UIButton().then {
         $0.setImage(UIImage(named: "Menu"), for: .normal)
         $0.tintColor = UIColor(named: "Primary")
     }
@@ -46,9 +46,11 @@ class HomeView: UIView {
         $0.register(PostCell.self, forCellReuseIdentifier: PostCell.identifier)
         $0.register(HomeTableViewHeaderView.self, forHeaderFooterViewReuseIdentifier: HomeTableViewHeaderView.identifier)
         $0.separatorStyle = .none
-        $0.estimatedRowHeight = 370
+        $0.estimatedRowHeight = UITableView.automaticDimension
         $0.rowHeight = UITableView.automaticDimension
         
+        $0.sectionHeaderHeight = UITableView.automaticDimension
+        $0.estimatedSectionHeaderHeight = 400
     }
     
     override init(frame: CGRect) {
@@ -79,7 +81,7 @@ class HomeView: UIView {
         
         headerView.addSubview(logo)
         headerView.addSubview(postButton)
-        headerView.addSubview(loginButton)
+        headerView.addSubview(SideMenuButton)
         
         addSubview(homeTableView)
     }
@@ -97,14 +99,14 @@ class HomeView: UIView {
             $0.centerY.equalToSuperview()
         }
         
-        loginButton.snp.makeConstraints {
+        SideMenuButton.snp.makeConstraints {
             $0.trailing.equalToSuperview().offset(-20)
             $0.centerY.equalToSuperview()
             $0.width.height.equalTo(24)
         }
         
         postButton.snp.makeConstraints {
-            $0.trailing.equalTo(loginButton.snp.leading).offset(-24)
+            $0.trailing.equalTo(SideMenuButton.snp.leading).offset(-24)
             $0.centerY.equalToSuperview()
             $0.width.height.equalTo(24)
         }
@@ -118,12 +120,12 @@ class HomeView: UIView {
     }
     
     private func setupActions() {
-        loginButton.addTarget(self, action: #selector(didTapLoginButton), for: .touchUpInside)
+        SideMenuButton.addTarget(self, action: #selector(didTapSideMenuButton), for: .touchUpInside)
         postButton.addTarget(self, action: #selector(didTapPostButton), for: .touchUpInside)
     }
     
-    @objc private func didTapLoginButton() {
-        delegate?.homeViewDidTapLogin()
+    @objc private func didTapSideMenuButton() {
+        delegate?.homeViewDidTapSideMenu()
     }
     
     @objc private func didTapPostButton() {

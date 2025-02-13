@@ -8,7 +8,7 @@
 import Foundation
 
 final class ProfileDetailViewModel {
-    private(set) var tabTitles: [String] = [" Blog ", " Profile ", " Comments "]
+    private(set) var tabTitles: [String] = ["Blog", "Profile", "Comments"]
 //    private(set) var userProfile: UserProfile?
     
     

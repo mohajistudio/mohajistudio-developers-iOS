@@ -10,11 +10,9 @@ import UIKit
 class HomeViewController: UIViewController {
     
     private let homeView = HomeView()
+    private let sideMenuView = SideMenuView()
     private let viewModel: HomeViewModel
 
-    override func loadView() {
-        view = homeView
-    }
     
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
@@ -28,10 +26,20 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.addSubview(homeView)
+        homeView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        view.addSubview(sideMenuView)
+        sideMenuView.snp.makeConstraints {
+            $0.horizontalEdges.bottom.equalToSuperview()
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+        }
 
         homeView.delegate = self
-        
-        
+        sideMenuView.getMenuView().delegate = self
         
         homeView.homeTableView.delegate = self
         homeView.homeTableView.dataSource = self
@@ -40,9 +48,18 @@ class HomeViewController: UIViewController {
 
     }
     
+    @objc func handleMenuToggle() {
+        sideMenuView.toggleMenu()
+    }
+    
 }
 
 extension HomeViewController: HomeViewDelegate {
+    
+    func homeViewDidTapSideMenu() {
+        print("sideMenu Tap")
+        handleMenuToggle()
+    }
     
     func didSearch(_ query: String) {
         viewModel.filterPosts(by: query)
@@ -52,22 +69,24 @@ extension HomeViewController: HomeViewDelegate {
         viewModel.filterPosts(byTag: tag)
     }
     
-    func homeViewDidTapLogin() {
-        print("homeViewDidTapLogin 탭")
-        
-        let loginViewModel = LoginViewModel()
-        let vc = LoginViewController(viewModel: loginViewModel)
-        let navigationController = UINavigationController(rootViewController: vc)
-        navigationController.setNavigationBarHidden(true, animated: false)
-        
-//        loginViewModel.loginSuccess = { [weak self] in
-//            self?.dismiss(animated: true)
-//            // 로그인 후 필요한 처리
-//        }
-        
-        navigationController.modalPresentationStyle = .fullScreen
-        present(navigationController, animated: true)
-    }
+//    func homeViewDidTapLogin() {
+//        print("homeViewDidTapLogin 탭")
+//        
+//        let loginViewModel = LoginViewModel()
+//        let vc = LoginViewController(viewModel: loginViewModel)
+//        let navigationController = UINavigationController(rootViewController: vc)
+//        navigationController.setNavigationBarHidden(true, animated: false)
+//        
+////        loginViewModel.loginSuccess = { [weak self] in
+////            self?.dismiss(animated: true)
+////            // 로그인 후 필요한 처리
+////        }
+//        
+//        navigationController.modalPresentationStyle = .fullScreen
+//        present(navigationController, animated: true)
+//    }
+    
+    
     
     func homeViewDidTapPost() {
         print("post 버튼 tap")
@@ -78,7 +97,7 @@ extension HomeViewController: HomeViewDelegate {
     
 }
 
-extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.tags.count
     }
@@ -141,8 +160,10 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         return UITableView.automaticDimension
     }
     
-    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return 300
+}
+
+extension HomeViewController: MenuViewDelegate {
+    func didTapCloseButton() {
+        sideMenuView.toggleMenu()
     }
-    
 }

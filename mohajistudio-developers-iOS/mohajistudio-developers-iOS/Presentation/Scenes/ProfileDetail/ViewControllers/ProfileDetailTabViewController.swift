@@ -16,8 +16,8 @@ class ProfileDetailTabViewController: UIViewController {
         $0.backgroundColor = UIColor(named: "Bg 1")
     }
     
-    private let logo = UIImageView().then {
-        $0.image = UIImage(named: "Logo")
+    private let logoButton = UIButton().then {
+        $0.setImage(UIImage(named: "Logo"), for: .normal)
     }
     
     private let editButton = UIButton().then {
@@ -56,6 +56,7 @@ class ProfileDetailTabViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupTabman()
+        setupAction()
     }
     
     // MARK: - Setup
@@ -68,7 +69,7 @@ class ProfileDetailTabViewController: UIViewController {
     
     private func setupHeaderView() {
         view.addSubview(headerView)
-        headerView.addSubview(logo)
+        headerView.addSubview(logoButton)
         headerView.addSubview(editButton)
         headerView.addSubview(menuButton)
         view.addSubview(tabBarContainer)
@@ -82,7 +83,7 @@ class ProfileDetailTabViewController: UIViewController {
             $0.height.equalTo(60 + safeAreaLayoutHeight)
         }
         
-        logo.snp.makeConstraints {
+        logoButton.snp.makeConstraints {
             $0.centerY.equalToSuperview().offset(safeAreaLayoutHeight/2)
             $0.leading.equalToSuperview().offset(20)
         }
@@ -146,6 +147,14 @@ class ProfileDetailTabViewController: UIViewController {
             button.font = UIFont(name: "Pretendard-Bold", size: 16) ?? .systemFont(ofSize: 16, weight: .bold)
             button.selectedFont = UIFont(name: "Pretendard-Bold", size: 16) ?? .systemFont(ofSize: 16, weight: .bold)
         }
+    }
+    
+    private func setupAction() {
+        logoButton.addTarget(self, action: #selector(didTapLogoButton), for: .touchUpInside)
+    }
+    
+    @objc private func didTapLogoButton() {
+        self.navigationController?.popViewController(animated: true)
     }
 }
 
