@@ -107,7 +107,8 @@ class HomeTableViewHeaderView: UITableViewHeaderFooterView {
         }
         
         searchBar.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+            $0.centerY.equalToSuperview()  // 중앙 정렬로 변경
         }
         
         tagHeaderView.snp.makeConstraints {
