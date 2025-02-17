@@ -8,5 +8,5 @@
 import Foundation
 
 struct NetworkConfiguration {
-    static let baseURL = "http://changheehome.myqnapcloud.com:8082"
+    static let baseURL = "https://devs-api.mohajistudio.com"
 }

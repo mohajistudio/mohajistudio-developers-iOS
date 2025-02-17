@@ -12,6 +12,8 @@ import Pageboy
 class ProfileDetailTabViewController: UIViewController {
     private let viewModel: ProfileDetailViewModel
     
+    private let sideMenuView = SideMenuView()
+    
     private let headerView = UIView().then {
         $0.backgroundColor = UIColor(named: "Bg 1")
     }
@@ -20,11 +22,11 @@ class ProfileDetailTabViewController: UIViewController {
         $0.setImage(UIImage(named: "Logo"), for: .normal)
     }
     
-    private let editButton = UIButton().then {
+    private let postButton = UIButton().then {
         $0.setImage(UIImage(named: "Post"), for: .normal)
     }
     
-    private let menuButton = UIButton().then {
+    private let sideMenuButton = UIButton().then {
         $0.setImage(UIImage(named: "Menu"), for: .normal)
     }
     
@@ -57,6 +59,8 @@ class ProfileDetailTabViewController: UIViewController {
         setupUI()
         setupTabman()
         setupAction()
+        
+        sideMenuView.getMenuView().delegate = self
     }
     
     // MARK: - Setup
@@ -69,10 +73,13 @@ class ProfileDetailTabViewController: UIViewController {
     
     private func setupHeaderView() {
         view.addSubview(headerView)
+        
         headerView.addSubview(logoButton)
-        headerView.addSubview(editButton)
-        headerView.addSubview(menuButton)
+        headerView.addSubview(postButton)
+        headerView.addSubview(sideMenuButton)
+        
         view.addSubview(tabBarContainer)
+        
         
         let safeAreaLayoutHeight = UIApplication.shared.connectedScenes
             .compactMap { ($0 as? UIWindowScene)?.keyWindow }
@@ -88,14 +95,14 @@ class ProfileDetailTabViewController: UIViewController {
             $0.leading.equalToSuperview().offset(20)
         }
         
-        menuButton.snp.makeConstraints {
+        sideMenuButton.snp.makeConstraints {
             $0.centerY.equalToSuperview().offset(safeAreaLayoutHeight/2)
             $0.trailing.equalToSuperview().offset(-20)
             $0.size.equalTo(24)
         }
         
-        editButton.snp.makeConstraints {
-            $0.trailing.equalTo(menuButton.snp.leading).offset(-16)
+        postButton.snp.makeConstraints {
+            $0.trailing.equalTo(sideMenuButton.snp.leading).offset(-24)
             $0.centerY.equalToSuperview().offset(safeAreaLayoutHeight/2)
             $0.size.equalTo(24)
         }
@@ -105,6 +112,13 @@ class ProfileDetailTabViewController: UIViewController {
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(36)
         }
+        
+        view.addSubview(sideMenuView)
+        sideMenuView.snp.makeConstraints {
+            $0.horizontalEdges.bottom.equalToSuperview()
+            $0.top.equalToSuperview()
+        }
+
     }
     
     private func setupTabmanViewController() {
@@ -117,6 +131,10 @@ class ProfileDetailTabViewController: UIViewController {
         }
         
         tabmanVC.didMove(toParent: self)
+        
+        if let sideMenuIndex = view.subviews.firstIndex(of: sideMenuView) {
+            view.bringSubviewToFront(sideMenuView)
+        }
     }
     
     private func setupTabman() {
@@ -151,11 +169,32 @@ class ProfileDetailTabViewController: UIViewController {
     
     private func setupAction() {
         logoButton.addTarget(self, action: #selector(didTapLogoButton), for: .touchUpInside)
+        
+        sideMenuButton.addTarget(self, action: #selector(handleMenuToggle), for: .touchUpInside)
     }
     
     @objc private func didTapLogoButton() {
         self.navigationController?.popViewController(animated: true)
     }
+    
+    @objc func handleMenuToggle() {
+        sideMenuView.toggleMenu()
+    }
+    
+    private func setLoginButton() {
+        sideMenuView.getMenuView().onLoginTapped = { [weak self] in
+            let loginViewModel = LoginViewModel()
+            let vc = LoginViewController(viewModel: loginViewModel)
+            let navigationController = UINavigationController(rootViewController: vc)
+            navigationController.setNavigationBarHidden(true, animated: false)
+            
+            navigationController.modalPresentationStyle = .fullScreen
+            self?.present(navigationController, animated: true)
+            
+            self?.handleMenuToggle()
+        }
+    }
+    
 }
 
 // MARK: - DataSource
@@ -174,5 +213,35 @@ extension ProfileDetailTabViewController: PageboyViewControllerDataSource, TMBar
     
     func barItem(for bar: TMBar, at index: Int) -> TMBarItemable {
         return TMBarItem(title: viewModel.tabTitles[index])
+    }
+}
+
+extension ProfileDetailTabViewController: MenuViewDelegate {
+    func didSelectMenuItem(_ menuItem: MenuItem) {
+        handleMenuToggle()
+        
+        switch menuItem {
+        case .myBlog:
+            return
+        case .drafts:
+            return
+        case .settings:
+            return
+        case .logout:
+            print("로그아웃")
+            showAlert(message: "로그아웃 하시겠습니까?",
+                      confirmTitle: "확인",
+                      confirmHandler: {
+                UserDefaultsManager.shared.clearUserInfo()
+                KeychainHelper.shared.clearTokens()}
+                      ,cancelTitle: "취소"
+            )
+        default:
+            return
+        }
+    }
+    
+    func didTapCloseButton() {
+        sideMenuView.toggleMenu()
     }
 }

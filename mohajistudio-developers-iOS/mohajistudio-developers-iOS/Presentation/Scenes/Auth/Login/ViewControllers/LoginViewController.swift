@@ -183,6 +183,7 @@ extension LoginViewController: PasswordViewDelegate {
                 await MainActor.run {
                     self.showAlert(message: "로그인에 성공했습니다.", confirmHandler:  {
                         self.navigationController?.dismiss(animated: true)
+                        
                     })
                 }
             } catch let error as NetworkError {

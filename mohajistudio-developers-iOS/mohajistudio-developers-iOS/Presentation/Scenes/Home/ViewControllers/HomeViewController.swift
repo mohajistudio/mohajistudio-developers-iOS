@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class HomeViewController: UIViewController {
     
@@ -27,15 +28,19 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = UIColor(named: "Bg 1")
+        view.insetsLayoutMarginsFromSafeArea = false
+        
         view.addSubview(homeView)
         homeView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalToSuperview()
+            $0.horizontalEdges.bottom.equalToSuperview()
         }
         
         view.addSubview(sideMenuView)
         sideMenuView.snp.makeConstraints {
             $0.horizontalEdges.bottom.equalToSuperview()
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            $0.top.equalToSuperview()
         }
 
         homeView.delegate = self
@@ -44,12 +49,27 @@ class HomeViewController: UIViewController {
         homeView.homeTableView.delegate = self
         homeView.homeTableView.dataSource = self
         
-        print("Tags count: \(viewModel.tags.count)")
-
+        setLoginButton()
+        
+        
     }
     
     @objc func handleMenuToggle() {
         sideMenuView.toggleMenu()
+    }
+    
+    private func setLoginButton() {
+        sideMenuView.getMenuView().onLoginTapped = { [weak self] in
+            let loginViewModel = LoginViewModel()
+            let vc = LoginViewController(viewModel: loginViewModel)
+            let navigationController = UINavigationController(rootViewController: vc)
+            navigationController.setNavigationBarHidden(true, animated: false)
+            
+            navigationController.modalPresentationStyle = .fullScreen
+            self?.present(navigationController, animated: true)
+            
+            self?.handleMenuToggle()
+        }
     }
     
 }
@@ -68,25 +88,6 @@ extension HomeViewController: HomeViewDelegate {
     func didSelectTag(_ tag: String) {
         viewModel.filterPosts(byTag: tag)
     }
-    
-//    func homeViewDidTapLogin() {
-//        print("homeViewDidTapLogin 탭")
-//        
-//        let loginViewModel = LoginViewModel()
-//        let vc = LoginViewController(viewModel: loginViewModel)
-//        let navigationController = UINavigationController(rootViewController: vc)
-//        navigationController.setNavigationBarHidden(true, animated: false)
-//        
-////        loginViewModel.loginSuccess = { [weak self] in
-////            self?.dismiss(animated: true)
-////            // 로그인 후 필요한 처리
-////        }
-//        
-//        navigationController.modalPresentationStyle = .fullScreen
-//        present(navigationController, animated: true)
-//    }
-    
-    
     
     func homeViewDidTapPost() {
         print("post 버튼 tap")
@@ -163,6 +164,32 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 extension HomeViewController: MenuViewDelegate {
+    func didSelectMenuItem(_ menuItem: MenuItem) {
+        handleMenuToggle()
+        
+        switch menuItem {
+        case .myBlog:
+            let profileDetailVC = ProfileDetailTabViewController(viewModel: ProfileDetailViewModel())
+            self.navigationController?.pushViewController(profileDetailVC, animated: false)
+            return
+        case .drafts:
+            return
+        case .settings:
+            return
+        case .logout:
+            print("로그아웃")
+            showAlert(message: "로그아웃 하시겠습니까?",
+                      confirmTitle: "확인",
+                      confirmHandler: {
+                UserDefaultsManager.shared.clearUserInfo()
+                KeychainHelper.shared.clearTokens()}
+                      ,cancelTitle: "취소"
+            )
+        default:
+            return
+        }
+    }
+    
     func didTapCloseButton() {
         sideMenuView.toggleMenu()
     }

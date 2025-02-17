@@ -16,8 +16,7 @@ class DevelopersCell: UITableViewCell {
     }
     
     private let thumbnailImageView = UIImageView().then {
-//        $0.setImage = UIImage(named: <#T##String#>)
-        $0.backgroundColor = .gray
+        $0.image = UIImage(named: "Default_profile")
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 17
     }

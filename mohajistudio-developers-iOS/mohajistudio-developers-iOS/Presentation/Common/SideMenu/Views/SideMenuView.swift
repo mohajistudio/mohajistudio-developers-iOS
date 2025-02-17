@@ -37,12 +37,16 @@ class SideMenuView: UIView {
     }
     
     private func setupShadowView() {
-        shadowView = UIView(frame: bounds)
-        shadowView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        shadowView = UIView()
         shadowView.backgroundColor = .black
         shadowView.alpha = 0.0
+        shadowView.insetsLayoutMarginsFromSafeArea = false
         
         addSubview(shadowView)
+        
+        shadowView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
     }
     
     private func setupMenuView() {
@@ -51,9 +55,11 @@ class SideMenuView: UIView {
     }
     
     private func setupConstraints() {
+        menuView.insetsLayoutMarginsFromSafeArea = false
+        
         menuView.snp.makeConstraints {
             $0.width.equalTo(menuWidth)
-            $0.top.bottom.equalToSuperview()
+            $0.verticalEdges.equalToSuperview()
         }
         
         trailingConstraint = menuView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: menuWidth)
@@ -79,6 +85,7 @@ class SideMenuView: UIView {
         isUserInteractionEnabled = isExpanded
         
         if isExpanded {
+            menuView.tableView.reloadData()
             tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
             shadowView.addGestureRecognizer(tapGesture!)
         } else {

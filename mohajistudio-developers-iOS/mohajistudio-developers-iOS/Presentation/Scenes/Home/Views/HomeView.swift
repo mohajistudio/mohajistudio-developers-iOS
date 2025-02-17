@@ -36,7 +36,7 @@ class HomeView: UIView {
         $0.tintColor = UIColor(named: "Primary")
     }
     
-    private let SideMenuButton = UIButton().then {
+    private let sideMenuButton = UIButton().then {
         $0.setImage(UIImage(named: "Menu"), for: .normal)
         $0.tintColor = UIColor(named: "Primary")
     }
@@ -81,7 +81,7 @@ class HomeView: UIView {
         
         headerView.addSubview(logo)
         headerView.addSubview(postButton)
-        headerView.addSubview(SideMenuButton)
+        headerView.addSubview(sideMenuButton)
         
         addSubview(homeTableView)
     }
@@ -99,14 +99,14 @@ class HomeView: UIView {
             $0.centerY.equalToSuperview()
         }
         
-        SideMenuButton.snp.makeConstraints {
+        sideMenuButton.snp.makeConstraints {
             $0.trailing.equalToSuperview().offset(-20)
             $0.centerY.equalToSuperview()
             $0.width.height.equalTo(24)
         }
         
         postButton.snp.makeConstraints {
-            $0.trailing.equalTo(SideMenuButton.snp.leading).offset(-24)
+            $0.trailing.equalTo(sideMenuButton.snp.leading).offset(-24)
             $0.centerY.equalToSuperview()
             $0.width.height.equalTo(24)
         }
@@ -120,7 +120,7 @@ class HomeView: UIView {
     }
     
     private func setupActions() {
-        SideMenuButton.addTarget(self, action: #selector(didTapSideMenuButton), for: .touchUpInside)
+        sideMenuButton.addTarget(self, action: #selector(didTapSideMenuButton), for: .touchUpInside)
         postButton.addTarget(self, action: #selector(didTapPostButton), for: .touchUpInside)
     }
     
