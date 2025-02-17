@@ -9,9 +9,12 @@ import UIKit
 
 protocol MenuViewDelegate: AnyObject {
     func didTapCloseButton()
+    func didSelectMenuItem(_ index: MenuItem)
 }
 
 class MenuView: UIView {
+    
+    var onLoginTapped: (() -> Void)?
     
     weak var delegate: MenuViewDelegate?
     
@@ -59,7 +62,7 @@ class MenuView: UIView {
         
         closeButton.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(16)
-            $0.top.equalToSuperview().offset(8)
+            $0.top.equalTo(safeAreaLayoutGuide.snp.top).offset(8)
             $0.width.height.equalTo(24)
         }
         
@@ -103,7 +106,7 @@ extension MenuView: UITableViewDataSource, UITableViewDelegate {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: MenuStringCell.identifier, for: indexPath) as? MenuStringCell else {
                 return UITableViewCell()
             }
-            cell.configure(title: sideMenuViewModel.menuItems[indexPath.row])
+            cell.configure(title: sideMenuViewModel.menuItems[indexPath.row].title)
             
             return cell
         case 1:
@@ -139,7 +142,8 @@ extension MenuView: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            return
+            let selectedItem = sideMenuViewModel.menuItems[indexPath.row]
+            delegate?.didSelectMenuItem(selectedItem)
         case 1:
             return
         default:
@@ -164,7 +168,22 @@ extension MenuView: UITableViewDataSource, UITableViewDelegate {
             guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: ProfileHeaderView.identifier) as? ProfileHeaderView else {
                 return nil
             }
-            headerView.configure(user: sideMenuViewModel.developers[0])
+            
+            if sideMenuViewModel.isLoggedIn {
+                if let userInfo = sideMenuViewModel.userInfo {
+                    print("UserInfo exists:", userInfo)
+                    headerView.configure(user: userInfo)
+                } else {
+                    print("UserInfo is nil")
+                }
+            } else {
+                headerView.configureForGuest()
+            }
+            
+            headerView.onLoginTapped = { [weak self] in
+                self?.onLoginTapped?()
+            }
+            
             return headerView
         case 1:
             guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: DevelopersHeaderView.identifier) as? DevelopersHeaderView else {
@@ -179,13 +198,14 @@ extension MenuView: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch section {
         case 0:
-            return UITableView.automaticDimension
+            return 84
         case 1:
-            return UITableView.automaticDimension
+            return 61
         default:
             return 0
         }
     }
+    
 }
 
 

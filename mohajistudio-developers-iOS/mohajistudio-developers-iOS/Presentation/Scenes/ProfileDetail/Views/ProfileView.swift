@@ -169,6 +169,12 @@ class ProfileView: UIView {
         introduceLabel.text = userDetail.bio
         
         contactsView.configure(contacts: contacts)
+        
+        guard let profileImageUrl = userDetail.profileImageUrl, profileImageUrl != "" else {
+            profileImageView.image = UIImage(named: "Default_profile")
+            return
+        }
+        
     }
     
 }
