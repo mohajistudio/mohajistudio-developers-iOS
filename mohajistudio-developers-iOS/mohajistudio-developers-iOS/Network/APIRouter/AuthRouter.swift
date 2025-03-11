@@ -32,9 +32,9 @@ extension AuthRouter: URLRequestConvertible {
         case .checkSignUpStatus:
             return "/auth/register/status"
         case .requestEmailVerification:
-            return "/auth/register/email/request"
+            return "/auth/register/email-verification/request"
         case .verifyEmailCode:
-            return "/auth/register/email/verify"
+            return "/auth/register/email-verification/verify"
         case .refreshToken:
             return "/auth/refresh"
         case .setPassword:

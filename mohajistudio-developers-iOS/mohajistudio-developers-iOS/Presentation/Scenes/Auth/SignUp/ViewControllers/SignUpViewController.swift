@@ -16,7 +16,7 @@ final class SignUpViewController: UIViewController {
         case setPassword
         case setProfileName
         
-        func view(delegate: Any, email: String? = nil) -> UIView {
+        func view(delegate: Any, viewModel: SignUpViewModel? = nil, email: String? = nil) -> UIView {
             switch self {
             case .email:
                 let view = SignUpView()
@@ -26,7 +26,7 @@ final class SignUpViewController: UIViewController {
                 print("Creating EmailVerificationView with email:", email ?? "nil")
                 let view = EmailVerificationView()
                 view.delegate = delegate as? EmailVerificationViewDelegate
-                view.configure(with: email)
+                view.configure(with: email, viewModel: viewModel)
                 return view
             case .setPassword:
                 let view = SetPasswordView()
@@ -70,7 +70,7 @@ final class SignUpViewController: UIViewController {
     }
     
     private func updateView(for step: Step, animated: Bool = false, reverseAnimation: Bool = false) {
-        let newView = step.view(delegate: self, email: viewModel.getCurrentEmail())
+        let newView = step.view(delegate: self, viewModel: viewModel, email: viewModel.getCurrentEmail())
         
         if animated {
             containerView.addSubview(newView)
@@ -148,10 +148,7 @@ final class SignUpViewController: UIViewController {
             switch error {
                 
             case .unknownUser:
-                currentStep = .emailVerification
                 viewModel.setEmail(email)
-                updateView(for: .emailVerification, animated: true)
-                
             case .passwordNotSet:
                 currentStep = .setPassword
                 viewModel.setEmail(email)
@@ -163,15 +160,35 @@ final class SignUpViewController: UIViewController {
                 updateView(for: .setProfileName, animated: true)
                 
             default:
-                //                    currentStep = .emailVerification
-                //                    viewModel.setEmail(email)
-                //                    updateView(for: .emailVerification, animated: true)
-                showAlert(message: "예기치 못한 오류가 발생했습니다.")
+                await MainActor.run {
+                    showAlert(message: "예기치 못한 오류가 발생했습니다.")
+                }
+                
             }
         } catch {
             await MainActor.run {
                 showAlert(message: "예기치 못한 오류가 발생했습니다.\n다시 시도해주세요.")
             }
+        }
+    }
+    
+    private func checkSignUpStatusWithoutUI(email: String) async -> NetworkError {
+        do {
+            try await viewModel.checkSignUpStatus(email: email)
+            return .alreadyRegistered
+        } catch let error as NetworkError {
+            switch error {
+            case .unknownUser:
+                return .unknownUser
+            case .passwordNotSet:
+                return .passwordNotSet
+            case .profileNameNotSet:
+                return .profileNameNotSet
+            default:
+                return .unknown(error.errorMessage)
+            }
+        } catch {
+            return .unknown("예기치 못한 오류가 발생했습니다.\n다시 시도해주세요.")
         }
     }
     
@@ -221,7 +238,6 @@ extension SignUpViewController: SignUpViewDelegate {
     }
     
     func signUpViewDidTapNext(email: String) {
-        
         print("signupView next button tap!")
         
         guard ValidationUtility.isValidEmail(email) else {
@@ -230,29 +246,95 @@ extension SignUpViewController: SignUpViewDelegate {
         
         viewModel.setEmail(email)
         
+        // 로딩 상태 시작
+        if let currentView = containerView.subviews.first as? SignUpView {
+            currentView.setNextButtonLoading(true)
+        }
+        
         Task {
-            
-            
             do {
-                await moveToRegistrationStep(email: email)
+                // 회원가입 상태 확인
+                let registrationStatus = await checkSignUpStatusWithoutUI(email: email)
                 
-                if currentStep == .emailVerification {
-                    try await viewModel.requestEmailVerification(email: email)
+                switch registrationStatus {
+                case .unknownUser:
+                    // 새 사용자인 경우, 이메일 인증 코드 요청 먼저 수행
+                    let response = try await viewModel.requestEmailVerification(email: email)
+                    
+                    // 인증 코드 요청이 성공한 후에만 화면 전환
+                    await MainActor.run {
+                        print("[VC] 인증 코드 요청 성공 - expiredAt: \(response.expiredAt)")
+                        // 로딩 버튼 상태 해제
+                        if let currentView = containerView.subviews.first as? SignUpView {
+                            currentView.setNextButtonLoading(false)
+                        }
+                        
+                        // 이메일 인증 화면으로 전환
+                        currentStep = .emailVerification
+                        updateView(for: .emailVerification, animated: true)
+                        
+                        // 타이머 시작
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { // 애니메이션 시간(0.5초)보다 약간 더 길게
+                            if let verificationView = self.containerView.subviews.first as? EmailVerificationView {
+                                print("[VC] EmailVerificationView 찾음, 타이머 시작 시도")
+                                verificationView.startTimer(expirationDate: response.expiredAt)
+                                print("[VC] 타이머 시작 메서드 호출 완료")
+                            } else {
+                                print("[VC] EmailVerificationView를 찾을 수 없음 (지연 후)")
+                            }
+                        }
+                    }
+                    
+                case .alreadyRegistered:
+                    await MainActor.run {
+                        if let currentView = containerView.subviews.first as? SignUpView {
+                            currentView.setNextButtonLoading(false)
+                        }
+                        showAlert(message: "이미 가입 완료된 계정입니다.")
+                    }
+                    
+                case .passwordNotSet:
+                    await MainActor.run {
+                        if let currentView = containerView.subviews.first as? SignUpView {
+                            currentView.setNextButtonLoading(false)
+                        }
+                        currentStep = .setPassword
+                        updateView(for: .setPassword, animated: true)
+                    }
+                    
+                case .profileNameNotSet:
+                    await MainActor.run {
+                        if let currentView = containerView.subviews.first as? SignUpView {
+                            currentView.setNextButtonLoading(false)
+                        }
+                        currentStep = .setProfileName
+                        updateView(for: .setProfileName, animated: true)
+                    }
+                    
+                case .unknown(let message):
+                    await MainActor.run {
+                        if let currentView = containerView.subviews.first as? SignUpView {
+                            currentView.setNextButtonLoading(false)
+                        }
+                        showAlert(message: message)
+                    }
+                default:
+                    showAlert(message: "예기치 못한 오류가 발생했습니다. 다시 시도해주세요.")
                 }
             } catch let error as NetworkError {
                 print(error)
-                try? await Task.sleep(for: .seconds(1.5)) // UX적 요소를 고려해 응답이 바로 오면 바로 뒤로가기하지 않도록
                 await MainActor.run {
-                    moveToPreviousStep()
-                    viewModel.setEmail("")
+                    if let currentView = containerView.subviews.first as? SignUpView {
+                        currentView.setNextButtonLoading(false)
+                    }
                     self.showAlert(message: error.errorMessage)
                 }
             } catch {
                 print(error)
-                try? await Task.sleep(for: .seconds(1.5))
                 await MainActor.run {
-                    moveToPreviousStep()
-                    viewModel.setEmail("")
+                    if let currentView = containerView.subviews.first as? SignUpView {
+                        currentView.setNextButtonLoading(false)
+                    }
                     self.showAlert(message: "예기치 못한 오류가 발생했습니다.\n다시 시도해주세요.")
                 }
             }
@@ -261,7 +343,6 @@ extension SignUpViewController: SignUpViewDelegate {
 }
 
 extension SignUpViewController: EmailVerificationViewDelegate {
-    
     func emailVerificationViewDidTapBack() {
         moveToPreviousStep()
     }
@@ -269,7 +350,11 @@ extension SignUpViewController: EmailVerificationViewDelegate {
     func emailVerificationViewDidTapResend(email: String) {
         Task {
             do {
-                try await viewModel.requestEmailVerification(email: email)
+                let response = try await viewModel.requestEmailVerification(email: email)
+                // 타이머 로직은 여기에 새로 구현될 예정
+                if let currentView = containerView.subviews.first as? EmailVerificationView {
+                    currentView.startTimer(expirationDate: response.expiredAt)
+                }
             }
             catch let error as NetworkError {
                 await MainActor.run {
@@ -285,12 +370,13 @@ extension SignUpViewController: EmailVerificationViewDelegate {
     }
     
     func emailVerificationViewDidTapNext(code: String) {
-        
         guard let currentView = containerView.subviews.first as? EmailVerificationView else { return }
         
-        guard ValidationUtility.isValidVerificationCode(code) else { currentView.showVerificationError(error: "인증코드가 올바르지 않습니다."); return }
+        guard ValidationUtility.isValidVerificationCode(code) else {
+            currentView.showVerificationError(error: "인증코드가 올바르지 않습니다.")
+            return
+        }
         
-        //         인증 코드 검증하는 메서드
         Task {
             do {
                 try await viewModel.verifyEmailCode(code: code)
@@ -307,9 +393,7 @@ extension SignUpViewController: EmailVerificationViewDelegate {
                 }
             }
         }
-        //        moveToNextStep()
     }
-    
 }
 
 extension SignUpViewController: SetPasswordViewDelegate {

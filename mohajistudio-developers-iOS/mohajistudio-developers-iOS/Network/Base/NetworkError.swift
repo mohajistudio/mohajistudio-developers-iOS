@@ -20,6 +20,7 @@ enum NetworkError: Error {
     case passwordAlreadyExists // R0002
     
     case nicknameAlreadyExists // R0003
+    case notValidNickname // C0001
     
     case passwordNotSet // R0005
     case profileNameNotSet // R0006
@@ -46,6 +47,8 @@ enum NetworkError: Error {
             return "알 수 없는 유저입니다."
         case .passwordAlreadyExists:
             return "비밀번호를 이미 설정하셨습니다."
+        case .notValidNickname:
+            return "유효하지 않은 닉네임입니다."
         case .nicknameAlreadyExists:
             return "이미 설정된 닉네임입니다."
         case .passwordNotSet:

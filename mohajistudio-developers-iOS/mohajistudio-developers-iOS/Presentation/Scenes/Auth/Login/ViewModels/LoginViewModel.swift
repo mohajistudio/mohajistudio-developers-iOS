@@ -37,7 +37,6 @@ extension LoginViewModel {
             throw NetworkError.unknown("이메일 입력 오류")
         }
         
-        print("email: \(email), password: \(password)")
         tokens = try await authRepository.login(email: email, password: password)
         
         if let tokens = tokens {
