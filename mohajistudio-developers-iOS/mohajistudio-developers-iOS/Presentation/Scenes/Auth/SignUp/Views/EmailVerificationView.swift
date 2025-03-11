@@ -15,8 +15,7 @@ protocol EmailVerificationViewDelegate : AnyObject {
 
 class EmailVerificationView: BaseStepView {
     
-    private let viewModel = SignUpViewModel()
-    
+    private var viewModel: SignUpViewModel?
     private var email: String?
     
     private let titleLabel = UILabel().then {
@@ -52,13 +51,11 @@ class EmailVerificationView: BaseStepView {
         $0.font = UIFont(name: "Pretendard-Medium", size: 16)
     }
     
-    private var timer: Timer?
-    private var remainingTime: Int = 300
-    
     private let timerLabel = UILabel().then {
         $0.textColor = UIColor(named: "Primary")
         $0.font = UIFont(name: "Pretendard-Light", size: 12)
         $0.textAlignment = .center
+        $0.text = "05:00"
     }
     
     private let errorLabel = UILabel().then {
@@ -94,7 +91,6 @@ class EmailVerificationView: BaseStepView {
         super.init(frame: frame)
         setupUI()
         setupActions()
-        bindViewModel()
         setupTextFieldDelegate(for: verificationCodeField)
     }
     
@@ -102,18 +98,33 @@ class EmailVerificationView: BaseStepView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - UI Setup
+    
     private func bindViewModel() {
-        viewModel.onTimerUpdate = { [weak self] timeString in
-            self?.timerLabel.text = timeString
+        viewModel?.onTimerUpdate = { [weak self] timeString in
+            DispatchQueue.main.async {
+                print("타이머 업데이트: \(timeString)")
+                self?.timerLabel.text = timeString
+            }
         }
         
-        viewModel.onTimerFinished = { [weak self] in
-            self?.resendButton.isEnabled = true
-            self?.resendButton.backgroundColor = UIColor(hexCode: "1E96FF")
+        viewModel?.onTimerFinished = { [weak self] in
+            DispatchQueue.main.async {
+                print("타이머 종료")
+                self?.handleTimerFinished()
+            }
         }
     }
     
-    // MARK: - UI Setup
+    private func handleTimerFinished() {
+        timerLabel.text = "00:00"
+    }
+    
+    func startTimer(expirationDate: String) {
+        print("타이머 시작: \(expirationDate)")
+        viewModel?.startTimer(expirationDate: expirationDate)
+    }
+    
     private func setupUI() {
         backgroundColor = UIColor(named: "Bg 1")
         setupHierarchy()
@@ -126,16 +137,6 @@ class EmailVerificationView: BaseStepView {
     }
     
     private func setupConstraints() {
-//        surfaceView.snp.makeConstraints {
-//            $0.top.leading.equalTo(safeAreaLayoutGuide).offset(20)
-//            $0.bottom.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
-//        }
-//        
-//        backButton.snp.makeConstraints {
-//            $0.leading.equalToSuperview().offset(20)
-//            $0.top.equalToSuperview().offset(20)
-//        }
-        
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(186)
             $0.leading.equalToSuperview().offset(24)
@@ -182,7 +183,6 @@ class EmailVerificationView: BaseStepView {
         backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         resendButton.addTarget(self, action: #selector(resendButtonTapped), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
-        
         verificationCodeField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
@@ -197,16 +197,18 @@ class EmailVerificationView: BaseStepView {
         print("email: \(email)")
         
         guard let email = email else {
-            print("resendButtonTapped - email is nil"); return
+            print("resendButtonTapped - email is nil")
+            return
         }
-        
-        viewModel.startTimer()
         
         delegate?.emailVerificationViewDidTapResend(email: email)
     }
     
     @objc private func nextButtonTapped() {
-        guard let code = verificationCodeField.text else { print("이메일 인증 코드 필드 값이 비었습니다."); return }
+        guard let code = verificationCodeField.text else {
+            print("이메일 인증 코드 필드 값이 비었습니다.")
+            return
+        }
         
         delegate?.emailVerificationViewDidTapNext(code: code)
     }
@@ -215,14 +217,16 @@ class EmailVerificationView: BaseStepView {
         resetVerificationError()
     }
     
-    override func removeFromSuperview() {
-        super.removeFromSuperview()
-        viewModel.stopTimer()
-    }
-    
-    func configure(with email: String?) {
+    func configure(with email: String?, viewModel: SignUpViewModel? = nil) {
+        print("[EmailVerification] configure 호출 - email: \(email ?? "nil"), viewModel: \(viewModel != nil ? "있음" : "nil")")
         self.email = email
-        viewModel.startTimer()
+        self.viewModel = viewModel
+        if viewModel != nil {
+            print("[EmailVerificationView] viewModel 있음, 바인딩 시작")
+            bindViewModel()
+        } else {
+            print("[EmailVerificationView] viewModel이 nil임, 바인딩 안 함")
+        }
     }
     
     func showVerificationError(error: String) {
@@ -237,5 +241,4 @@ class EmailVerificationView: BaseStepView {
         errorLabel.text = ""
         errorLabel.isHidden = true
     }
-    
 }

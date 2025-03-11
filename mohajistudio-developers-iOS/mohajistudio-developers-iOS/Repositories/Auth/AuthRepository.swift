@@ -10,7 +10,7 @@ import Alamofire
 
 protocol AuthRepositoryProtocol {
     func checkSignUpStatus(email: String) async throws
-    func requestEmailVerification(email: String) async throws
+    func requestEmailVerification(email: String) async throws -> RequestEmailCodeResponse
     func verifyEmailCode(email: String, code: String) async throws -> AuthTokenResponse
     func setPassword(password: String) async throws
     func setNickname(nickname: String) async throws
@@ -46,7 +46,7 @@ final class AuthRepository: AuthRepositoryProtocol {
         }
     }
     
-    func requestEmailVerification(email: String) async throws {
+    func requestEmailVerification(email: String) async throws -> RequestEmailCodeResponse {
         let request = EmailVerificationRequest(email: email)
         
         let response = try await AF.request(AuthRouter.requestEmailVerification(request))
@@ -59,7 +59,9 @@ final class AuthRepository: AuthRepositoryProtocol {
         
         switch statusCode {
         case 200:
-            return
+            guard let data = response.data else { throw NetworkError.invalidResponse }
+            let decoder = JSONDecoder()
+            return try decoder.decode(RequestEmailCodeResponse.self, from: data)
         default:
             if let data = response.data {
                 throw try handleError(data)
@@ -67,7 +69,6 @@ final class AuthRepository: AuthRepositoryProtocol {
                 throw NetworkError.invalidResponse
             }
         }
-        
     }
     
     func verifyEmailCode(email: String, code: String) async throws -> AuthTokenResponse {
@@ -77,6 +78,7 @@ final class AuthRepository: AuthRepositoryProtocol {
             .serializingResponse(using: .data)
             .response
         
+        print("request: \(request)")
         debugPrint(response)
         
         if response.response?.statusCode == 200 {
